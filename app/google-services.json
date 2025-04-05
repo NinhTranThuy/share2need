@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "228594099338",
+    "project_id": "ampg23-share2need-f38fd",
+    "storage_bucket": "ampg23-share2need-f38fd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228594099338:android:cfb86de2140de3b05c3973",
+        "android_client_info": {
+          "package_name": "com.example.share2need"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeemdB_1Q8wrs4nFZ5LThkGLKwRxA-9cQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

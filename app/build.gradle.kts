@@ -33,12 +33,24 @@ android {
 }
 
 dependencies {
+    // Firebase BOM (quản lý phiên bản tự động)
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
 
+    // Các thư viện Firebase (không cần version)
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-common")
+    implementation ("com.google.firebase:firebase-auth")
+    // Các dependencies khác giữ nguyên
+    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Các libs từ file versions.toml
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/home_24px"
+        android:title="Trang chủ"/>
+    <item
+        android:id="@+id/nav_favorite"
+        android:icon="@drawable/favorite_24px"
+        android:title="Yêu thích" />
+
+    <!-- Chừa chỗ cho FAB ở giữa -->
+    <item
+        android:id="@+id/nav_placeholder"
+        android:enabled="false"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="" />
+
+    <item
+        android:id="@+id/nav_order"
+        android:icon="@drawable/package_2_24px"
+        android:title="Danh sách đơn hàng" />
+
+    <item
+        android:id="@+id/nav_account"
+        android:icon="@drawable/person_24px"
+        android:title="Tài khoản" />
+</menu>

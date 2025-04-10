@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Product {
     public Product(String id, String userId, String name, String description, String category,
-                   List<String> images, double price, int quantity, String status, String address,
+                   List<String> images, int quantity, String status, String address,
                    GeoPoint location, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.userId = userId;
@@ -14,7 +14,6 @@ public class Product {
         this.description = description;
         this.category = category;
         this.images = images;
-        this.price = price;
         this.quantity = quantity;
         this.status = status;
         this.address = address;
@@ -74,14 +73,6 @@ public class Product {
 
     public void setImages(List<String> images) {
         this.images = images;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public int getQuantity() {

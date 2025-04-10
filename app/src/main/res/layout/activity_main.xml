@@ -75,8 +75,9 @@
     <!--    Main Layout-->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nav_top">
@@ -96,7 +97,8 @@
                 android:paddingTop="10dp"
                 android:paddingEnd="20dp"
                 android:paddingBottom="10dp"
-                android:text="Chọn vị trí của bạn" />
+                android:text="Chọn vị trí của bạn"
+                android:onClick="findLocation_onClick"/>
             <!--            Categoriez-->
             <LinearLayout
                 android:layout_width="match_parent"

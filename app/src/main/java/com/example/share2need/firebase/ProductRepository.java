@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.share2need.models.Product;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,7 +58,14 @@ public class ProductRepository {
                         productsLiveData.postValue(null);
                         return;
                     }
+// Log số lượng document nhận được
+                    Log.d("FirestoreDebug", "Total documents: " + snapshots.size());
 
+                    // Log từng document ID
+                    for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                        Log.d("FirestoreDebug", "Change type: " + dc.getType() +
+                                ", Doc ID: " + dc.getDocument().getId());
+                    }
                     // 3. Xử lý snapshot
                     List<Product> products = new ArrayList<>();
                     if (snapshots != null) {

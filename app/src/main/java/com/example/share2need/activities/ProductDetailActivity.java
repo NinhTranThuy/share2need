@@ -16,15 +16,17 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.example.share2need.R;
 import com.example.share2need.firebase.ProductRepository;
+import com.example.share2need.firebase.UserRepository;
 import com.example.share2need.models.Product;
+import com.example.share2need.models.User;
 
 public class ProductDetailActivity extends AppCompatActivity {
     ProductRepository productRepository = null;
 
     //UI mapping
     TextView tvNameProduct = null, tvCategory = null, tvQuantity = null, tvAddress = null,
-            tvcreatedAt = null, tvDescription = null;
-    ImageView imageProduct = null;
+            tvcreatedAt = null, tvDescription = null, tvNameUser=null;
+    ImageView imageProduct = null, imgUserPost = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         tvcreatedAt = findViewById(R.id.tvcreatedAt);
         tvDescription = findViewById(R.id.tvDescription);
         imageProduct = findViewById(R.id.imageProduct);
+        imgUserPost = findViewById(R.id.imgUserPost);
+        tvNameUser = findViewById(R.id.tvNameUser);
     }
 
     private void initData() {
@@ -84,6 +88,48 @@ public class ProductDetailActivity extends AppCompatActivity {
                         if (tvAddress != null) {
                             tvAddress.setText(product.getAddress() != null ? product.getAddress() : "Không có địa chỉ");
                         }
+
+                        //Hien thi Thong tin User
+                        UserRepository userRepository = new UserRepository();
+                        userRepository.getUserInfo(product.getUserId(), new UserRepository.UserCallback() {
+                                    @Override
+                                    public void onUserLoaded(User user) {
+                                        if (tvNameUser != null) {
+                                            tvNameUser.setText(user.getFullname() != null ? user.getFullname() : "Không thấy user");
+                                        }
+
+                                        String imageAvaUrl = (user.getProfileImage()!= null && !user.getProfileImage().isEmpty()) ?
+                                                user.getProfileImage() : null;
+
+                                        if (imgUserPost != null) {
+                                            try {
+                                                if (imageAvaUrl != null) {
+                                                    Glide.with(imgUserPost.getContext())
+                                                            .load(imageAvaUrl)
+                                                            .placeholder(R.drawable.ic_launcher_background)
+                                                            .error(R.drawable.broken_image_24px)
+                                                            .into(imgUserPost);
+                                                } else {
+                                                    imageProduct.setImageResource(R.drawable.ic_launcher_background);
+                                                }
+                                            } catch (Exception e) {
+                                                Log.e("ImageError", "Error loading image", e);
+                                                imageProduct.setImageResource(R.drawable.broken_image_24px);
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onUserNotFound() {
+                                        tvNameUser.setText("Không thấy user");
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        Log.e("Firestores", "Error getting document", e);
+                                    }
+
+                                });
 
                         // Xử lý thời gian với kiểm tra null
                         if (tvcreatedAt != null) {

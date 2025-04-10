@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.share2need.R;
 import com.example.share2need.activities.ProductDetailActivity;
+import com.example.share2need.firebase.UserRepository;
 import com.example.share2need.models.Product;
+import com.example.share2need.models.User;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,6 +44,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = productList.get(position);
+
+        //Hien anh san pham
         String imageUrl = (product.getImages() != null && !product.getImages().isEmpty()) ?
                     product.getImages().get(0) : null;
         Log.e("ImageTest", imageUrl);
@@ -56,16 +60,60 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 holder.imgProduct.setImageResource(R.drawable.ic_launcher_background);
             }
         }
-            holder.tvNameProduct.setText(product.getName());
-            //Tinh toán khoảng cách rồi hiện lên
-            holder.tvDistance.setText("Địa chỉ "+ product.getAddress());
-            holder.tvCreatedAt.setText(getTimeAgo((long)product.getCreatedAt().toDate().getTime()));
-            holder.tvStatus.setText(product.getStatus());
-            holder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ProductDetailActivity.class);
-                intent.putExtra("productId", product.getId());
-                context.startActivity(intent);
-            });
+
+        //Hien thong tin san pham
+        holder.tvNameProduct.setText(product.getName());
+        //Tinh toán khoảng cách rồi hiện lên
+        holder.tvDistance.setText("Địa chỉ "+ product.getAddress());
+        holder.tvCreatedAt.setText(getTimeAgo((long)product.getCreatedAt().toDate().getTime()));
+        holder.tvStatus.setText(product.getStatus());
+
+        UserRepository userRepository = new UserRepository();
+        userRepository.getUserInfo(product.getUserId(), new UserRepository.UserCallback() {
+            @Override
+            public void onUserLoaded(User user) {
+                if (holder.tvUserPostName != null) {
+                    holder.tvUserPostName.setText(user.getFullname() != null ? user.getFullname() : "Không thấy user");
+                }
+
+                String imageAvaUrl = (user.getProfileImage()!= null && !user.getProfileImage().isEmpty()) ?
+                        user.getProfileImage() : null;
+
+                if (holder.imgUserPost != null) {
+                    try {
+                        if (imageAvaUrl != null) {
+                            Glide.with(holder.imgUserPost .getContext())
+                                    .load(imageAvaUrl)
+                                    .placeholder(R.drawable.ic_launcher_background)
+                                    .error(R.drawable.broken_image_24px)
+                                    .into(holder.imgUserPost );
+                        } else {
+                            holder.imgUserPost .setImageResource(R.drawable.ic_launcher_background);
+                        }
+                    } catch (Exception e) {
+                        Log.e("ImageError", "Error loading image", e);
+                        holder.imgUserPost .setImageResource(R.drawable.broken_image_24px);
+                    }
+                }
+            }
+
+            @Override
+            public void onUserNotFound() {
+                holder.tvUserPostName.setText("Không thấy user");
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("Firestores", "Error getting document", e);
+            }
+
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ProductDetailActivity.class);
+            intent.putExtra("productId", product.getId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -98,7 +146,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
     public class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView imgProduct, imgUserPost;
-        TextView tvNameProduct, tvUserPostName, tvDistance, tvCreatedAt, tvStatus;
+        TextView tvNameProduct, tvUserPostName, tvDistance, tvCreatedAt, tvStatus ;
         CardView cardProduct;
 
         public ProductViewHolder(@NonNull View itemView) {
@@ -110,6 +158,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             tvCreatedAt = itemView.findViewById(R.id.tvcreatedAt);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             cardProduct = itemView.findViewById(R.id.cardProduct);
+            imgUserPost = itemView.findViewById(R.id.imgUserPost);
         }
     }
 }

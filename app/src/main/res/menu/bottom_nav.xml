@@ -5,9 +5,9 @@
         android:icon="@drawable/home_24px"
         android:title="Trang chủ"/>
     <item
-        android:id="@+id/nav_manage"
-        android:icon="@drawable/post_24px"
-        android:title="Quản lý tin" />
+        android:id="@+id/nav_favorite"
+        android:icon="@drawable/favorite_24px"
+        android:title="Yêu thích" />
 
     <!-- Chừa chỗ cho FAB ở giữa -->
     <item

@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">share2need</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Share2Need</string>
+    <string name="search_hint">Tìm kiếm trên Share2Need</string>
+    <string name="lorem_sample">Lorem Ipsum is simply dummy text of the printing and typesetting industry.ap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum  simply dummy text of t  sim simply dummy text of t ply dummy text of t.
+
+</string>
 </resources>

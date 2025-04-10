@@ -1,11 +1,13 @@
-package com.example.share2need;
+package com.example.share2need.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.example.share2need.FavouriteProductAdapter;
+import com.example.share2need.R;
+import com.example.share2need.models.Product;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -15,7 +17,7 @@ import java.util.Map;
 public class FavoriteActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private ProductAdapter adapter;
+    private FavouriteProductAdapter adapter;
     private ArrayList<Product> favoriteList = new ArrayList<>();
     private FirebaseFirestore db;
     private ListenerRegistration listener;
@@ -30,7 +32,7 @@ public class FavoriteActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewFavorites);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new ProductAdapter(this, favoriteList);
+
         recyclerView.setAdapter(adapter);
 
         db = FirebaseFirestore.getInstance();

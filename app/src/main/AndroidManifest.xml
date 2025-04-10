@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
@@ -16,14 +17,14 @@
         android:theme="@style/Theme.Share2need"
         tools:targetApi="31">
         <activity
-            android:name=".UserProfileActivity"
+            android:name=".activities.UserProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".FavoriteActivity"
+            android:name=".activities.FavoriteActivity"
             android:exported="false" />
+        <activity
             android:name=".activities.ProductDetailActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

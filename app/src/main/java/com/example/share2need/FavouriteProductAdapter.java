@@ -12,13 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.share2need.models.Product;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+public class FavouriteProductAdapter extends RecyclerView.Adapter<FavouriteProductAdapter.ProductViewHolder> {
 
     private Context context;
     private List<Product> productList;
@@ -27,7 +28,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     //String userId = auth.getCurrentUser().getUid();
     String userId = "userA";
 
-    public ProductAdapter(Context context, List<Product> productList) {
+    public FavouriteProductAdapter(Context context, List<Product> productList) {
         this.context = context;
         this.productList = productList;
     }

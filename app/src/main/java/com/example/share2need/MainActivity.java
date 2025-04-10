@@ -60,11 +60,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); // layout này chứa 1 nút mở favorite
 
-        btnGoUserProfile = findViewById(R.id.btnGoUserProfile);
-        btnGoUserProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-            startActivity(intent);
-        });
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnected();

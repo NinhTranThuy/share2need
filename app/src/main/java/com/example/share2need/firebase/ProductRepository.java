@@ -45,6 +45,26 @@ public class ProductRepository {
                 });
     }
 
+    public LiveData<List<Product>> getAllProductByUserID(String userID) {
+        MutableLiveData<List<Product>> liveData = new MutableLiveData<>();
+
+        db.collection("products")
+                .whereEqualTo("userId", userID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Product> products = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Product product = document.toObject(Product.class);
+                        product.setId(document.getId());
+                        products.add(product);
+                        Log.d("DocDebug", "Document: " + document.getId());
+                    }
+                    liveData.setValue(products);
+                })
+                .addOnFailureListener(e -> liveData.setValue(null));
+
+        return liveData;
+    }
     public void startListening() {
         // 1. Hủy listener cũ nếu có
         stopListening();
@@ -89,14 +109,12 @@ public class ProductRepository {
                     productsLiveData.postValue(products.isEmpty() ? null : products);
                 });
     }
-
     public void stopListening() {
         if (listener != null) {
             listener.remove();
             listener = null;
         }
     }
-
     public LiveData<List<Product>> getProductsLiveData() {
         return productsLiveData;
     }

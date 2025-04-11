@@ -7,7 +7,8 @@
     <item
         android:id="@+id/nav_favorite"
         android:icon="@drawable/favorite_24px"
-        android:title="Yêu thích" />
+        android:title="Yêu thích"
+        android:onClick="favorite_onClick"/>
 
     <!-- Chừa chỗ cho FAB ở giữa -->
     <item
@@ -19,10 +20,12 @@
     <item
         android:id="@+id/nav_order"
         android:icon="@drawable/package_2_24px"
-        android:title="Danh sách đơn hàng" />
+        android:title="Danh sách đơn hàng"
+        android:onClick="order_onClick"/>
 
     <item
         android:id="@+id/nav_account"
         android:icon="@drawable/person_24px"
-        android:title="Tài khoản" />
+        android:title="Tài khoản"
+        android:onClick="userProfile_onClick"/>
 </menu>

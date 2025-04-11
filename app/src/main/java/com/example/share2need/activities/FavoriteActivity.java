@@ -1,11 +1,13 @@
 package com.example.share2need.activities;
 
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.share2need.FavouriteProductAdapter;
+import com.example.share2need.adapters.FavouriteProductAdapter;
 import com.example.share2need.R;
 import com.example.share2need.models.Product;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,7 +24,7 @@ public class FavoriteActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private ListenerRegistration listener;
 
-    private String currentUserId = "userA"; // Bạn có thể lấy từ FirebaseAuth.getInstance().getCurrentUser().getUid()
+    private String currentUserId = "u1"; // Bạn có thể lấy từ FirebaseAuth.getInstance().getCurrentUser().getUid()
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,5 +70,9 @@ public class FavoriteActivity extends AppCompatActivity {
     protected void onDestroy() {
         if (listener != null) listener.remove();
         super.onDestroy();
+    }
+
+    public void backActivity_onClick(View view) {
+        finish();
     }
 }

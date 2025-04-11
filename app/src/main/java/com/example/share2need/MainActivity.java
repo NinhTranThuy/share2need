@@ -2,6 +2,7 @@ package com.example.share2need;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.share2need.activities.FavoriteActivity;
+import com.example.share2need.activities.UserProfileActivity;
 import com.example.share2need.adapters.ProductAdapter;
 import com.example.share2need.firebase.ProductRepository;
 import com.example.share2need.models.Product;
@@ -87,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MainActivity", "Received null products");
                 return;
             }
-            Log.d("MainActivityy", "Received " + products.size() + " products");
             ProductAdapter productAdapter = new ProductAdapter(this, products);
             recyclerViewProducts.setLayoutManager(new GridLayoutManager(this, 2));
             recyclerViewProducts.setAdapter(productAdapter);
@@ -96,9 +98,6 @@ public class MainActivity extends AppCompatActivity {
         // 2. Bắt đầu lắng nghe
         productRepository.startListening();
 //            productList = (List<Product>) productRepository.getAllProductsLive();
-
-
-
     }
 
     public void findLocation_onClick(View view) {
@@ -212,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Lỗi khi lấy địa chỉ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
     // Xử lý kết quả yêu cầu quyền
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -227,5 +225,15 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    public void favorite_onClick(MenuItem item) {
+        Intent favourIntent = new Intent(this, FavoriteActivity.class);
+        startActivity(favourIntent);
+    }
+    public void userProfile_onClick(MenuItem item) {
+        Intent userProfileIntent = new Intent(this, UserProfileActivity.class);
+        startActivity(userProfileIntent);
+    }
+    public void order_onClick(MenuItem item) {
     }
 }

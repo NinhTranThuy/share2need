@@ -239,7 +239,8 @@
                 android:text="Nhắn tin"
                 android:textSize="14dp"
                 android:textAlignment="center"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
         </LinearLayout>
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 </androidx.constraintlayout.widget.ConstraintLayout>

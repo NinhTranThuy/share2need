@@ -1,6 +1,8 @@
 package com.example.share2need;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -12,28 +14,24 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.share2need.activities.ChatListActivity;
 import com.example.share2need.activities.FavoriteActivity;
+import com.example.share2need.activities.PostActivity;
 import com.example.share2need.activities.UserProfileActivity;
 import com.example.share2need.adapters.ProductAdapter;
 import com.example.share2need.firebase.ProductRepository;
+import com.example.share2need.firebase.UserRepository;
 import com.example.share2need.models.Product;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -51,12 +49,14 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerViewProducts = null;
     List<Product> productList = new ArrayList<>();
     ProductRepository productRepository = null;
+    UserRepository userRepository = null;
     TextView tvAdress = null;
     //Location
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
-
     Button btnGoUserProfile;
+    //Bao gio co Login Firebase Auth thi bo
+    String userID = "u1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDataView() {
-
-
+        userRepository = new UserRepository();
         productRepository = new ProductRepository();
         recyclerViewProducts = findViewById(R.id.recyclerViewProducts);
 
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void findLocation_onClick(View view) {
         // Kiểm tra quyền trước
-        if (checkLocationPermission()) {
+        if (checkLocationPermission() && checkGPSEnable()) {
             // Đã có quyền, tiến hành lấy vị trí
             getCurrentLocation();
         } else {
@@ -118,6 +117,11 @@ public class MainActivity extends AppCompatActivity {
                         == PackageManager.PERMISSION_GRANTED;
     }
 
+    private boolean checkGPSEnable(){
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return isGPSEnabled;
+    }
     // Yêu cầu quyền truy cập vị trí
     private void requestLocationPermission() {
         ActivityCompat.requestPermissions(
@@ -129,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
                 LOCATION_PERMISSION_REQUEST_CODE
         );
     }
-
     // Lấy vị trí hiện tại
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -152,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Lỗi khi lấy vị trí: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-
     // Yêu cầu cập nhật vị trí mới nếu không có vị trí cuối cùng
     private void requestNewLocation() {
         LocationRequest locationRequest = LocationRequest.create();
@@ -184,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
                 Looper.getMainLooper()
         );
     }
-
     // Lấy địa chỉ từ tọa độ
     private void getAddressFromLocation(double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -195,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 String fullAddress = address.getAddressLine(0);
                 TextView tvAddress = findViewById(R.id.tvAdress);
                 tvAddress.setText(fullAddress);
-
+                userRepository.updateUserAddress(userID, fullAddress);
                 // Có thể hiển thị thêm thông tin khác nếu cần
                 String locationInfo = String.format(
                         "Vị trí: %.6f, %.6f\nĐịa chỉ: %s",
@@ -203,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
                         longitude,
                         fullAddress
                 );
-                Toast.makeText(this, locationInfo, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Không tìm thấy địa chỉ", Toast.LENGTH_SHORT).show();
             }
@@ -235,5 +235,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(userProfileIntent);
     }
     public void order_onClick(MenuItem item) {
+    }
+
+    public void postActivity_onClick(View view) {
+        Intent postIntent = new Intent(this, PostActivity.class);
+        //Bao gio co Login Firebase Auth thi bo
+        postIntent.putExtra("userID", userID);
+        startActivity(postIntent);
+    }
+
+    public void chatListActivity_onClick(View view) {
+        Intent intent  = new Intent(this, ChatListActivity.class);
+        startActivity(intent);
     }
 }

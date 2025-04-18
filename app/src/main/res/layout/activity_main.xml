@@ -70,7 +70,8 @@
             android:background="@color/green"
             app:tint="@color/white"
             android:padding="6dp"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:onClick="chatListActivity_onClick"/>
     </LinearLayout>
     <!--    Main Layout-->
     <androidx.core.widget.NestedScrollView
@@ -270,6 +271,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nestedScrollView" />
+        app:layout_constraintTop_toBottomOf="@+id/nestedScrollView"
+        android:onClick="postActivity_onClick"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

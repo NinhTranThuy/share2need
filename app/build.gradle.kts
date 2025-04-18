@@ -45,6 +45,7 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     // Các libs từ file versions.toml

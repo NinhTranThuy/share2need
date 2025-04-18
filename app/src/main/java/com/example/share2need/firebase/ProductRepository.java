@@ -1,4 +1,5 @@
 package com.example.share2need.firebase;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -24,6 +25,32 @@ public class ProductRepository {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final MutableLiveData<List<Product>> productsLiveData = new MutableLiveData<>();
     private ListenerRegistration listener;
+
+//    Bao gio co Login Firebase thi bo
+    String userID = "u1";
+
+//    public void insertProrduct(String nameProduct, String quantity, String description,
+//                               String address, String category, List<Uri> listImage){
+//        db.collection("products")
+//                .get().addOnCompleteListener(task -> {
+//                    if(task.isSuccessful()){
+//                        int id = task.getResult().size();
+//                        String newID = "pr"+ (id+1);
+//
+//                        Product = new Product(
+//                                newID,
+//                                userID,
+//                                nameProduct,
+//                                description,
+//                                category,
+//                                null,
+//                                quantity,
+//                                address,
+//                        )
+//                    }
+//                });
+//
+//    }
     public void getProductById(String productId, final ProductCallback callback){
         db.collection("products")
                 .document(productId)
@@ -44,7 +71,6 @@ public class ProductRepository {
 
                 });
     }
-
     public LiveData<List<Product>> getAllProductByUserID(String userID) {
         MutableLiveData<List<Product>> liveData = new MutableLiveData<>();
 

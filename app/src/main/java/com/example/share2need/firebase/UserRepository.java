@@ -1,5 +1,7 @@
 package com.example.share2need.firebase;
 
+import android.util.Log;
+
 import com.example.share2need.models.User;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -24,7 +26,17 @@ public class UserRepository {
                 });
     }
 
-
+    public void updateUserAddress(String userID, String address){
+        db.collection("users")
+                .document(userID)
+                .update("address",address)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("UserRepository", "Address updated successfully");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("UserRepository", "Error updating address", e);
+                });
+    }
     public interface UserCallback{
         public void onUserLoaded(User user);
         public void onUserNotFound();

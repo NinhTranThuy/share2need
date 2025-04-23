@@ -1,18 +1,23 @@
 package com.example.share2need.firebase;
+import static java.security.AccessController.getContext;
+
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.share2need.models.Product;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -29,28 +34,41 @@ public class ProductRepository {
 //    Bao gio co Login Firebase thi bo
     String userID = "u1";
 
-//    public void insertProrduct(String nameProduct, String quantity, String description,
-//                               String address, String category, List<Uri> listImage){
-//        db.collection("products")
-//                .get().addOnCompleteListener(task -> {
-//                    if(task.isSuccessful()){
-//                        int id = task.getResult().size();
-//                        String newID = "pr"+ (id+1);
-//
-//                        Product = new Product(
-//                                newID,
-//                                userID,
-//                                nameProduct,
-//                                description,
-//                                category,
-//                                null,
-//                                quantity,
-//                                address,
-//                        )
-//                    }
-//                });
-//
-//    }
+    public void insertProrduct(String nameProduct, int quantity, String description,
+                               String category, List<String> listImage, String address, GeoPoint location){
+        db.collection("products")
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        int id = task.getResult().size();
+                        String newID = "pr"+ (id+1);
+
+                        Product newProduct = new Product(
+                                newID,
+                                userID,
+                                nameProduct,
+                                description,
+                                category,
+                                listImage,
+                                quantity,
+                                "còn hàng",
+                                address,
+                                location,
+                                Timestamp.now(),
+                                Timestamp.now()
+                        );
+
+                        db.collection("products")
+                                .document(newID)
+                                .set(newProduct)
+                                .addOnSuccessListener(task1 -> {
+                                    Log.e("ProductRepository", "Add Proudct Success " + listImage.size());
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("ProductRepository", "Add Proudct Fail: " + e );
+                                });
+                    }
+                });
+    }
     public void getProductById(String productId, final ProductCallback callback){
         db.collection("products")
                 .document(productId)
@@ -144,7 +162,26 @@ public class ProductRepository {
     public LiveData<List<Product>> getProductsLiveData() {
         return productsLiveData;
     }
-
+    public LiveData<List<Product>> getCategoryProductsLive(String category) {
+        category = category.trim();
+        MutableLiveData<List<Product>> liveData = new MutableLiveData<>();
+        db.collection("products")
+                .whereEqualTo("category", category)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                   List<Product> products = new ArrayList<>();
+                    Log.d("DocDebugg", "Document: Check ");
+                   for(QueryDocumentSnapshot document : queryDocumentSnapshots){
+                       Product product = document.toObject(Product.class);
+                       product.setId(document.getId());
+                       products.add(product);
+                        Log.d("DocDebugg", "Document: " + document.getId());
+                   }
+                   liveData.setValue(products);
+                })
+                .addOnFailureListener(e -> liveData.setValue(null));
+        return liveData;
+    }
     public interface ProductCallback{
         public void onProductLoaded(Product product);
         public void onProductNotFound();

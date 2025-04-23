@@ -35,11 +35,10 @@ public class FavoriteActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        recyclerView.setAdapter(adapter);
-
         db = FirebaseFirestore.getInstance();
-
         loadFavorites();
+        adapter = new FavouriteProductAdapter(this, favoriteList);
+        recyclerView.setAdapter(adapter);
     }
 
     private void loadFavorites() {

@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.share2need.activities.CategoryProductListActivity;
 import com.example.share2need.activities.ChatListActivity;
 import com.example.share2need.activities.FavoriteActivity;
 import com.example.share2need.activities.PostActivity;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
         Log.d("Network", "Online: " + isConnected);
         FirebaseFirestore.setLoggingEnabled(true); // Thêm vào onCreate()
+
         initDataView();
 
         initData();
@@ -236,16 +238,39 @@ public class MainActivity extends AppCompatActivity {
     }
     public void order_onClick(MenuItem item) {
     }
-
     public void postActivity_onClick(View view) {
         Intent postIntent = new Intent(this, PostActivity.class);
         //Bao gio co Login Firebase Auth thi bo
         postIntent.putExtra("userID", userID);
         startActivity(postIntent);
     }
-
     public void chatListActivity_onClick(View view) {
         Intent intent  = new Intent(this, ChatListActivity.class);
         startActivity(intent);
+    }
+    public void categoryProductListActivity_onClick(View view) {
+        if (view.getId() == R.id.categorize1) {
+            Intent intent = new Intent(this, CategoryProductListActivity.class);
+            intent.putExtra("categoryName", "Thực phẩm tươi sống");
+            startActivity(intent);
+        }
+
+        if (view.getId() == R.id.categorize2) {
+            Intent intent = new Intent(this, CategoryProductListActivity.class);
+            intent.putExtra("categoryName", "Lương thực");
+            startActivity(intent);
+        }
+
+        if (view.getId() == R.id.categorize3) {
+            Intent intent = new Intent(this, CategoryProductListActivity.class);
+            intent.putExtra("categoryName", "Thực phẩm đóng gói");
+            startActivity(intent);
+        }
+
+        if (view.getId() == R.id.categorize4) {
+            Intent intent = new Intent(this, CategoryProductListActivity.class);
+            intent.putExtra("categoryName", "Nhu yếu phẩm khác");
+            startActivity(intent);
+        }
     }
 }

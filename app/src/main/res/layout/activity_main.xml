@@ -132,19 +132,24 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:onClick="categoryProductListActivity_onClick">
 
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:contentDescription="Categorize1"
-                            android:src="@drawable/categorize1" />
+                            android:src="@drawable/categorize1"
+                            android:focusable="false"
+                            android:clickable="false"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Thực phẩm\ntươi sống"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:focusable="false"
+                            android:clickable="false"/>
                     </LinearLayout>
                     <!--                    Categorize 2-->
                     <LinearLayout
@@ -153,19 +158,24 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:onClick="categoryProductListActivity_onClick">
 
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:contentDescription="Categorize2"
-                            android:src="@drawable/categorize2" />
+                            android:src="@drawable/categorize2"
+                            android:focusable="false"
+                            android:clickable="false"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Lượng thực"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:focusable="false"
+                            android:clickable="false"/>
                     </LinearLayout>
                     <!--                    Categoriez 3-->
                     <LinearLayout
@@ -174,19 +184,24 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:onClick="categoryProductListActivity_onClick">
 
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:contentDescription="Categorize3"
-                            android:src="@drawable/categorize3" />
+                            android:src="@drawable/categorize3"
+                            android:focusable="false"
+                            android:clickable="false"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Thực phẩm\nđóng gói"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:focusable="false"
+                            android:clickable="false"/>
                     </LinearLayout>
                     <!--                    Categorize 4-->
                     <LinearLayout
@@ -195,19 +210,24 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:onClick="categoryProductListActivity_onClick">
 
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:contentDescription="Categorize4"
-                            android:src="@drawable/categorize4" />
+                            android:src="@drawable/categorize4"
+                            android:focusable="false"
+                            android:clickable="false"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Nhu yếu\nphẩm khác"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:focusable="false"
+                            android:clickable="false"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

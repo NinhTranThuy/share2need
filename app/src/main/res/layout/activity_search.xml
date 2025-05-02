@@ -77,22 +77,25 @@
                     android:orientation="horizontal"
                     app:singleSelection="true">
                     <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:id="@+id/chipDistance1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:text="1km" />
                     <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:id="@+id/chipDistance3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="3km"/>
                     <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:id="@+id/chipDistance5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="5km"/>
                     <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:id="@+id/chipDistance10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -126,21 +129,25 @@
                     android:orientation="horizontal"
                     app:singleSelection="true">
                     <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:id="@+id/chipCategory1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thực phẩm tươi sống" />
                     <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:id="@+id/chipCategory2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Lương thực"/>
                     <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:id="@+id/chipCategory3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thực phẩm đóng gói"/>
                     <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:id="@+id/chipCategory4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

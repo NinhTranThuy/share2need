@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -64,6 +65,44 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 searchProduct();
+            }
+        });
+
+        chipDistanceGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            for(int i=0;i<group.getChildCount();i++){
+                Chip chip = (Chip) group.getChildAt(i);
+                if(chip.getId() == checkedId){
+                    chip.setChipBackgroundColorResource(R.color.green);
+                    chip.setTextColor(ContextCompat.getColor(SearchActivity.this, R.color.white));
+                } else {
+                    chip.setChipBackgroundColorResource(R.color.white);
+                    chip.setTextColor(ContextCompat.getColor(SearchActivity.this, R.color.black));
+                }
+            }
+            Chip selectedChip = findViewById(checkedId);
+            if (selectedChip != null) {
+                distance = Integer.parseInt(selectedChip.getText().toString().replace("km","").trim());
+                searchProduct(); // Gọi lại hàm search khi đổi chip
+            }
+        });
+
+        chipCategoriesGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            for (int i = 0; i < group.getChildCount(); i++) {
+                Chip chip = (Chip) group.getChildAt(i);
+                if (chip.getId() == checkedId) {
+                    chip.setChipBackgroundColorResource(R.color.green);
+                    chip.setTextColor(ContextCompat.getColor(SearchActivity.this, R.color.white));
+                } else {
+                    chip.setChipBackgroundColorResource(R.color.white);
+                    chip.setTextColor(ContextCompat.getColor(SearchActivity.this, R.color.black));
+                }
+            }
+
+            // ✅ Cập nhật giá trị category và gọi lại search
+            Chip selectedChip = findViewById(checkedId);
+            if (selectedChip != null) {
+                category = selectedChip.getText().toString();
+                searchProduct(); // Gọi lại hàm search khi đổi chip
             }
         });
     }
@@ -121,11 +160,10 @@ public class SearchActivity extends AppCompatActivity {
     public void searchProduct(){
         String keyword = edtSearch.getText().toString().trim();
         ProductRepository productRepository = new ProductRepository();
-        Log.d("testSearch", "testOnClickSearch");
         productRepository.searchProduct(keyword, distance, category,currentLocation,  new ProductRepository.SearchCallback() {
             @Override
             public void onSearchSuccess(List<Product> products) {
-                if (products != null) {
+                if (products != null && products.size() > 0) {
                     Log.d("testSearch", "testSearchSuccess" + products.size());
                     noProductFoundIcon.setVisibility(View.GONE);
                     productRecyclerView.setVisibility(View.VISIBLE);

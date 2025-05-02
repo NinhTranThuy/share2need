@@ -55,7 +55,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         //Hien anh san pham
         String imageUrl = (product.getImages() != null && !product.getImages().isEmpty()) ?
                     product.getImages().get(0) : null;
-        Log.e("ImageTest", imageUrl);
         if (holder.imgProduct != null) {
             if (imageUrl != null) {
                 if (isValidUrl(imageUrl)) {
@@ -92,12 +91,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         userRepository.getUserInfo(product.getUserId(), new UserRepository.UserCallback() {
             @Override
             public void onUserLoaded(User user) {
-                String imageUrl = (product.getImages() != null && !product.getImages().isEmpty()) ?
-                        product.getImages().get(0) : null;
+                String imageUrl = (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) ?
+                        user.getProfileImage() : null;
 
-                Log.e("ImageTest", imageUrl + "");
+                holder.tvUserPostName.setText(user.getFullname());
 
-                if (holder.imgProduct != null) {
+                if (holder.imgUserPost != null) {
                     if (imageUrl != null) {
                         if (isValidUrl(imageUrl)) {
                             // 🔗 Ảnh là URL
@@ -105,20 +104,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                                     .load(imageUrl)
                                     .placeholder(R.drawable.ic_launcher_background)
                                     .error(R.drawable.broken_image_24px)
-                                    .into(holder.imgProduct);
+                                    .into(holder.imgUserPost);
                         } else {
                             // 🧬 Ảnh là Base64
                             try {
                                 byte[] decodedBytes = Base64.decode(imageUrl, Base64.DEFAULT);
                                 Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-                                holder.imgProduct.setImageBitmap(bitmap);
+                                holder.imgUserPost.setImageBitmap(bitmap);
                             } catch (Exception e) {
                                    Log.e("Base64Error", "Lỗi decode ảnh base64", e);
-                                holder.imgProduct.setImageResource(R.drawable.broken_image_24px);
+                                holder.imgUserPost.setImageResource(R.drawable.broken_image_24px);
                             }
                         }
                     } else {
-                        holder.imgProduct.setImageResource(R.drawable.ic_launcher_background);
+                        holder.imgUserPost.setImageResource(R.drawable.ic_launcher_background);
                     }
                 }
             }

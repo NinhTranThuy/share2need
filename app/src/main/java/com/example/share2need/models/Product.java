@@ -5,12 +5,27 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.List;
 
 public class Product {
-    public Product(String id, String userId, String name, String description, String category,
+    private String userId;
+    private String name;
+    private String lowercase_name;
+    private String description;
+    private String category; // "thực phẩm", "vệ sinh", "y tế", "khác"
+    private List<String> images;
+    private double price;
+    private int quantity;
+    private String status; // "còn hàng", "đã đặt", "đã bán"
+    private String address;
+    private GeoPoint location;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+
+    public Product(String id, String userId, String name, String lowercase_name, String description, String category,
                    List<String> images, int quantity, String status, String address,
                    GeoPoint location, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.userId = userId;
         this.name = name;
+        this.lowercase_name = lowercase_name;
         this.description = description;
         this.category = category;
         this.images = images;
@@ -123,18 +138,11 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    private String userId;
-    private String name;
-    private String description;
-    private String category; // "thực phẩm", "vệ sinh", "y tế", "khác"
-    private List<String> images;
-    private double price;
-    private int quantity;
-    private String status; // "còn hàng", "đã đặt", "đã bán"
-    private String address;
-    private GeoPoint location;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    public String getLowercase_name() {
+        return lowercase_name;
+    }
 
-
+    public void setLowercase_name(String lowercase_name) {
+        this.lowercase_name = lowercase_name;
+    }
 }

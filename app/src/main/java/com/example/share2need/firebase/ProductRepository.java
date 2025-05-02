@@ -1,6 +1,7 @@
 package com.example.share2need.firebase;
 import static java.security.AccessController.getContext;
 
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
@@ -11,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.share2need.models.Product;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -19,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -33,7 +36,6 @@ public class ProductRepository {
 
 //    Bao gio co Login Firebase thi bo
     String userID = "u1";
-
     public void insertProrduct(String nameProduct, int quantity, String description,
                                String category, List<String> listImage, String address, GeoPoint location){
         db.collection("products")
@@ -46,6 +48,7 @@ public class ProductRepository {
                                 newID,
                                 userID,
                                 nameProduct,
+                                nameProduct.toLowerCase(),
                                 description,
                                 category,
                                 listImage,
@@ -181,6 +184,75 @@ public class ProductRepository {
                 })
                 .addOnFailureListener(e -> liveData.setValue(null));
         return liveData;
+    }
+
+    public void searchProduct(String keyword, int selectedDistance, String category, Location userLocation, SearchCallback callback){
+        CollectionReference productRef = db.collection("products");
+        Query query = productRef;
+
+        if(!category.equals("Tất cả")){
+            query = query.whereEqualTo("category", category);
+        }
+
+        String[] keywordParts = keyword.toLowerCase().trim().split("\\s+");
+
+        query.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                List<Product> products = new ArrayList<>();
+
+                for(DocumentSnapshot snapshot : task.getResult()){
+                    Product product = snapshot.toObject(Product.class);
+
+                    String lowerName = snapshot.getString("lowercase_name");
+
+                    boolean matched = true;
+
+                    if (!keyword.isEmpty()) {
+                        if (lowerName == null) {
+                            matched = false;
+                        } else {
+                            for (String part : keywordParts) {
+                                if (!lowerName.contains(part)) {
+                                    matched = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (matched) {
+                        // ✅ Tính khoảng cách nếu cần
+                        if (userLocation != null && product.getLocation() != null && selectedDistance > 0) {
+                            double distance = getDistanceInKm(
+                                    userLocation.getLatitude(), userLocation.getLongitude(),
+                                    product.getLocation().getLatitude(), product.getLocation().getLongitude()
+                            );
+
+                            if (distance <= selectedDistance) {
+                                products.add(product);
+                            }
+                        } else {
+                            products.add(product);
+                        }
+                    }
+                }
+
+                callback.onSearchSuccess(products);
+            } else {
+                callback.onSearchError(task.getException());
+            }
+        });
+    }
+
+    private double getDistanceInKm(double lat1, double lon1, double lat2, double lon2) {
+        float[] result = new float[1];
+        Location.distanceBetween(lat1, lon1, lat2, lon2, result);
+        return result[0] / 1000.0;
+    }
+
+    public interface SearchCallback{
+        public void onSearchSuccess(List<Product> products);
+        public void onSearchError(Exception e);
     }
     public interface ProductCallback{
         public void onProductLoaded(Product product);

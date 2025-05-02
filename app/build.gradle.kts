@@ -35,6 +35,8 @@ android {
 dependencies {
     // Firebase BOM (quản lý phiên bản tự động)
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation ("com.google.android.material:material:1.10.0")
+
 
     // Các thư viện Firebase (không cần version)
     implementation("com.google.firebase:firebase-firestore")

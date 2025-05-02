@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
     <!--    Search Bar Layout-->
     <LinearLayout
         android:id="@+id/nav_top"
@@ -21,6 +21,7 @@
         android:paddingBottom="5dp"
         android:paddingStart="10dp">
         <LinearLayout
+            android:id="@+id/searchBar"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -28,26 +29,25 @@
             android:background="@drawable/background_searchbar"
             android:orientation="horizontal"
             android:padding="10dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:onClick="seachActivity_onClick">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/search_24px"
                 android:tint="@color/grey"
                 android:layout_marginEnd="10dp"
-                tools:ignore="UseAppTint" />
-            <EditText
-                android:id="@+id/edtSearch"
+                tools:ignore="UseAppTint"
+                android:clickable="false"/>
+            <TextView
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_height="50dp"
-                android:maxWidth="200dp"
-                android:background="@drawable/background_searchbar"
-                android:hint="@string/search_hint"
-                android:autofillHints="none"
-                android:inputType="text"
-                android:textColorHint="@color/grey"
-                />
+                android:text="@string/search_hint"
+                android:textColor="@color/grey"
+                android:clickable="false"
+                android:textSize="14dp"/>
+
         </LinearLayout>
 
         <ImageButton

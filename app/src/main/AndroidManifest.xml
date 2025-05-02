@@ -18,6 +18,12 @@
         android:theme="@style/Theme.Share2need"
         tools:targetApi="31">
         <activity
+            android:name=".None"
+            android:exported="false" />
+        <activity
+            android:name=".activities.SearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.CategoryProductListActivity"
             android:exported="false" />
         <activity
@@ -45,7 +51,7 @@
             android:name=".activities.ProductDetailActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

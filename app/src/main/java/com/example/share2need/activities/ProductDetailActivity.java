@@ -31,6 +31,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             tvcreatedAt = null, tvDescription = null, tvNameUser=null;
     ImageView imageProduct = null, imgUserPost = null;
     String userID = null;
+    String productId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +62,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void initData() {
         Intent intent = getIntent();
-        String productId = intent.getStringExtra("productId").trim();
-        Log.e("productId", productId);
+        productId = intent.getStringExtra("productId").trim();
 
         productRepository = new ProductRepository();
         productRepository.getProductById(productId, new ProductRepository.ProductCallback() {
@@ -208,15 +208,15 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     public void openChatActivity_onClick(View view) {
-//        Intent intent = new Intent(this, ChatActivity.class);
-//        intent.putExtra("product_id", 1);
-//        startActivity(intent);
+        Intent intent = new Intent(this, ChatDetailActivity.class);
+        intent.putExtra("product_id", productId);
+        intent.putExtra("user_id_OwnProduct", userID);
+        startActivity(intent);
     }
 
     private boolean isValidUrl(String string) {
         return string.startsWith("http://") || string.startsWith("https://");
     }
-
     public static String getTimeAgo(long timestamp) {
         long now = System.currentTimeMillis();
         long diffInMillis = now - timestamp;
@@ -245,7 +245,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     public void backActivity_onClick(View view) {
         finish();
     }
-
     public void userInfo_onClick(View view) {
         Intent intent = new Intent(this, UserProfileActivity.class);
         intent.putExtra("userId", userID);

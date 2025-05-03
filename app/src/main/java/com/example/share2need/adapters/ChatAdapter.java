@@ -9,16 +9,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.share2need.R;
-import com.example.share2need.models.Chat;
+import com.example.share2need.models.ChatSummary;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
-    private List<Chat> chatList;
+    private List<ChatSummary> chatSummaryList;
     private OnChatClickListener listener;
 
-    public ChatAdapter(List<Chat> chatList, OnChatClickListener listener) {
-        this.chatList = chatList;
+    public ChatAdapter(List<ChatSummary> chatSummaryList, OnChatClickListener listener) {
+        this.chatSummaryList = chatSummaryList;
         this.listener = listener;
     }
 
@@ -31,17 +35,38 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
-        Chat chat = chatList.get(position);
-        holder.userName.setText(chat.getUserName());
-        holder.lastMessage.setText(chat.getLastMessage());
-        holder.timestamp.setText(chat.getTimestamp());
+        ChatSummary chatSummary = chatSummaryList.get(position);
+        holder.userName.setText(chatSummary.getUserName());
+        holder.lastMessage.setText(chatSummary.getLastMessage());
+        holder.timestamp.setText(formatTimestamp(chatSummary.getTimestamp()));
 
-        holder.itemView.setOnClickListener(v -> listener.onChatClick(chat));
+        holder.itemView.setOnClickListener(v -> listener.onChatClick(chatSummary));
+    }
+
+    private String formatTimestamp(long timestampMillis) {
+        Calendar now = Calendar.getInstance();
+        Calendar messageTime = Calendar.getInstance();
+        messageTime.setTimeInMillis(timestampMillis);
+
+        long diffMillis = now.getTimeInMillis() - messageTime.getTimeInMillis();
+        long diffDays = TimeUnit.MILLISECONDS.toDays(diffMillis);
+
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+        if (diffDays < 7) {
+            // Hiển thị "Thứ Hai", "Thứ Ba", ...
+            String[] days = {"Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"};
+            String weekday = days[messageTime.get(Calendar.DAY_OF_WEEK) - 1];
+            return weekday + ", " + timeFormat.format(messageTime.getTime());
+        } else {
+            SimpleDateFormat fullFormat = new SimpleDateFormat("dd/MM/yyyy, HH:mm", Locale.getDefault());
+            return fullFormat.format(messageTime.getTime());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return chatList.size();
+        return chatSummaryList.size();
     }
 
     static class ChatViewHolder extends RecyclerView.ViewHolder {
@@ -56,6 +81,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     }
 
     public interface OnChatClickListener {
-        void onChatClick(Chat chat);
+        void onChatClick(ChatSummary chatSummary);
     }
 }

@@ -18,9 +18,6 @@
         android:theme="@style/Theme.Share2need"
         tools:targetApi="31">
         <activity
-            android:name=".None"
-            android:exported="false" />
-        <activity
             android:name=".activities.SearchActivity"
             android:exported="false" />
         <activity
@@ -37,7 +34,8 @@
             android:exported="false" />
         <activity
             android:name=".activities.ChatDetailActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            />
         <activity
             android:name=".activities.PostActivity"
             android:exported="false" />

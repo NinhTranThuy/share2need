@@ -18,13 +18,22 @@
 
     <!-- Tin nhắn -->
     <TextView
-        android:id="@+id/messageText"
+        android:id="@+id/tvMessageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/frame_category_layout"
         android:padding="10dp"
         android:text="Tin nhắn"
         android:textSize="13dp"
+        android:layout_marginStart="5dp"
+        />
+    <TextView
+        android:id="@+id/tvMessageTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="21:12"
+        android:textSize="9dp"
         android:layout_marginStart="5dp"
         />
 </LinearLayout>

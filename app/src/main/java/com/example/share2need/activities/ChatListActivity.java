@@ -2,13 +2,10 @@ package com.example.share2need.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,9 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.share2need.R;
 import com.example.share2need.adapters.ChatAdapter;
-import com.example.share2need.adapters.UserAdapter;
-import com.example.share2need.models.Chat;
-import com.example.share2need.models.User;
+import com.example.share2need.models.ChatSummary;
+import com.google.firebase.Timestamp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +29,7 @@ import java.util.List;
 public class ChatListActivity extends AppCompatActivity implements ChatAdapter.OnChatClickListener{
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
-    private List<Chat> chatList;
+    private List<ChatSummary> chatSummaryList;
     private DatabaseReference chatSummariesRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +46,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatAdapter.O
         recyclerView = findViewById(R.id.recyclerViewChatList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        chatList = new ArrayList<>();
-        adapter = new ChatAdapter(chatList, this);
+        chatSummaryList = new ArrayList<>();
+        adapter = new ChatAdapter(chatSummaryList, this);
         recyclerView.setAdapter(adapter);
 
         // Kết nối với Firebase để lấy danh sách cuộc trò chuyện
@@ -59,13 +55,15 @@ public class ChatListActivity extends AppCompatActivity implements ChatAdapter.O
         chatSummariesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                chatList.clear();
+                chatSummaryList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String userID = snapshot.child("userID").getValue(String.class);
+                    String receiverUserId = snapshot.child("receiverUserID").getValue(String.class);
                     String userName = snapshot.child("userName").getValue(String.class);
                     String lastMessage = snapshot.child("lastMessage").getValue(String.class);
-                    String timestamp = snapshot.child("timestamp").getValue(String.class);
-                    if (userName != null && lastMessage != null && timestamp != null) {
-                        chatList.add(new Chat(userName, lastMessage, timestamp));
+                    long timestamp = snapshot.child("timestamp").getValue(long.class);
+                    if (userName != null && lastMessage != null && timestamp > 0) {
+                        chatSummaryList.add(new ChatSummary(userID, receiverUserId, userName, lastMessage, timestamp));
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -78,9 +76,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatAdapter.O
         });
     }
     @Override
-    public void onChatClick(Chat chat) {
+    public void onChatClick(ChatSummary chatSummary) {
         Intent intent = new Intent(this, ChatDetailActivity.class);
-        intent.putExtra("userName", chat.getUserName());
+        intent.putExtra("userName", chatSummary.getUserName());
         startActivity(intent);
     }
     public void backActivity_onClick(View view) {

@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private void initDataView() {
         userRepository = new UserRepository();
         productRepository = new ProductRepository();
-        recyclerViewProducts = findViewById(R.id.recyclerViewProducts);
+        recyclerViewProducts = findViewById(R.id.recyclerViewProductsMain);
 
 
         // 1. Khởi tạo observer

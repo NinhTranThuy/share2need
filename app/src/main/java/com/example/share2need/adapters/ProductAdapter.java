@@ -22,32 +22,27 @@ import com.example.share2need.activities.ProductDetailActivity;
 import com.example.share2need.firebase.UserRepository;
 import com.example.share2need.models.Product;
 import com.example.share2need.models.User;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Context context;
     private List<Product> productList;
-
     public ProductAdapter(Context context, List<Product> productList) {
         this.context = context;
         this.productList = productList != null ? productList : new ArrayList<>();
     }
-
     private boolean isValidUrl(String string) {
         return string.startsWith("http://") || string.startsWith("https://");
     }
-
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.product_layout, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_product, parent, false);
         return new ProductViewHolder(view);
     }
 
@@ -82,7 +77,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 holder.imgProduct.setImageResource(R.drawable.ic_launcher_background);
             }
         }
-
         //Hien thong tin san pham
         holder.tvNameProduct.setText(product.getName());
         //Tinh toán khoảng cách rồi hiện lên
@@ -137,17 +131,38 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         });
 
+        String userId = "u1";
+        String productId = product.getId();
+
+        db.collection("favorites")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() &&
+                            documentSnapshot.contains(productId) &&
+                            Boolean.TRUE.equals(documentSnapshot.getBoolean(productId))) {
+
+                        // Người dùng đã yêu thích sản phẩm
+                        holder.tvStar.setBackgroundResource(R.drawable.ic_star_filled);
+                    } else {
+                        // Chưa yêu thích
+                        holder.tvStar.setBackgroundResource(R.drawable.star_24px);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Lỗi truy cập Firestore
+                    holder.tvStar.setBackgroundResource(R.drawable.ic_star_border);
+                });
+
+
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ProductDetailActivity.class);
             intent.putExtra("productId", product.getId());
             context.startActivity(intent);
         });
         holder.tvStar.setOnClickListener(v -> {
-            //String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            String userId = "u1";
-            String productId = product.getId();
 
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("favorites")
                     .document(userId)
                     .update(productId, true)

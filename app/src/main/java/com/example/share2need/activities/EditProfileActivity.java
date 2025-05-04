@@ -208,22 +208,23 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
         openImagePicker();
     }
     private void openImagePicker() {
-
         Intent pickerImageIntent = new Intent(Intent.ACTION_GET_CONTENT);
         pickerImageIntent.setType("image/*");
-        pickerImageIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(Intent.createChooser(pickerImageIntent,"Chọn ảnh"), 1);
+        startActivityForResult(Intent.createChooser(pickerImageIntent, "Chọn ảnh"), 1);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            if (data.getClipData() != null) {
-                addImageToContainer(data.getData());
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            if (imageUri != null) {
+                addImageToContainer(imageUri);
+                convertUriToBase64(imageUri);
             }
         }
-        convertUriToBase64(data.getData());
     }
+
     //Lay ra tung anh trong listImage<Uri> de cho vao Layout
     private void addImageToContainer(Uri imageUri){
         ImageView imageView = new ImageView(this);
@@ -241,7 +242,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
             try {
                 InputStream inputStream = getContentResolver().openInputStream(imageUris);
                 if (inputStream == null) {
-                    Log.e("PostActivity", "inputStream null cho Uri: " + imageUris.toString());
+                    Log.e("PostActivityy", "inputStream null cho Uri: " + imageUris.toString());
                 }
 
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);

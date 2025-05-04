@@ -1,7 +1,12 @@
 package com.example.share2need.activities;
 
+import static android.webkit.URLUtil.isValidUrl;
+
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -87,6 +92,7 @@ public class UserProfileActivity extends AppCompatActivity {
             Long totalRatings = documentSnapshot.getLong("totalRatings");
             Timestamp createdAt = documentSnapshot.getTimestamp("createdAt");
 
+
             fullnameText.setText(fullname != null ? fullname : "");
             emailText.setText(email != null ? email : "");
             phoneText.setText(phone != null ? phone : "");
@@ -95,12 +101,7 @@ public class UserProfileActivity extends AppCompatActivity {
             ratingText.setText((rating != null ? rating : 0) +
                     " (" + (totalRatings != null ? totalRatings : 0) + " lượt)");
 
-            if (profileImage != null && !profileImage.isEmpty()) {
-                Glide.with(this)
-                        .load(profileImage)
-                        .placeholder(R.drawable.baseline_account_circle_24)
-                        .into(avatarImage);
-            }
+            displayImage(profileImage);
             //Hien danh sach san pham
             ProductRepository productRepository = new ProductRepository();
             productRepository.getAllProductByUserID(userId).observe(this,products -> {
@@ -128,24 +129,38 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
-            String fullname = data.getStringExtra("fullname");
-            String email = data.getStringExtra("email");
-            String phone = data.getStringExtra("phone");
-            String address = data.getStringExtra("address");
-            String profileImage = data.getStringExtra("profileImage");
+    }
 
-            fullnameText.setText(fullname != null ? fullname : "");
-            emailText.setText(email != null ? email : "");
-            phoneText.setText(phone != null ? phone : "");
-            addressText.setText(address != null ? address : "");
+    private void displayImage(String profileImage){
+        if (avatarImage != null) {
+            if (profileImage != null) {
+                if (isValidUrl(profileImage)) {
+                    Log.d("CheckImageee", "profileImage: " );
 
-            if (profileImage != null && !profileImage.isEmpty()) {
-                Glide.with(this)
-                        .load(profileImage)
-                        .placeholder(R.drawable.baseline_account_circle_24)
-                        .into(avatarImage);
+                    // 🔗 Ảnh là URL
+                    Glide.with(avatarImage.getContext())
+                            .load(profileImage)
+                            .placeholder(R.drawable.ic_launcher_background)
+                            .error(R.drawable.broken_image_24px)
+                            .into(avatarImage);
+                } else {
+                    // 🧬 Ảnh là Base64
+                    try {
+                        Log.d("CheckImageee", "profileImage: " + profileImage);
+                        byte[] decodedBytes = Base64.decode(profileImage, Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                        avatarImage.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        Log.e("Base64Error", "Lỗi decode ảnh base64", e);
+                        avatarImage.setImageResource(R.drawable.broken_image_24px);
+                    }
+                }
+            } else {
+                avatarImage.setImageResource(R.drawable.ic_launcher_background);
             }
         }
+    }
+    private boolean isValidUrl(String string) {
+        return string.startsWith("http://") || string.startsWith("https://");
     }
 }

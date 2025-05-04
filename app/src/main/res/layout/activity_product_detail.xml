@@ -52,6 +52,8 @@
             android:orientation="vertical"
             android:padding="15dp">
             <!--        Content-->
+
+<!--            Anh san pham-->
             <ImageView
                 android:id="@+id/imageProduct"
                 android:layout_width="match_parent"
@@ -61,6 +63,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_launcher_background" />
 
+<!--           Ten san pham-->
             <TextView
                 android:id="@+id/tvNameProduct"
                 android:layout_width="match_parent"
@@ -68,7 +71,7 @@
                 android:text="Nước hoa hồng Dear Klairs Supple Preparation Unscented Toner 180ml"
                 android:textSize="20dp"
                 android:textStyle="bold" />
-
+<!--            Phan loai Category-->
             <TextView
                 android:id="@+id/tvCategory"
                 android:layout_width="wrap_content"
@@ -84,7 +87,7 @@
                 android:textColor="@color/green"
                 android:textSize="16dp"
                 android:textStyle="bold" />
-
+<!--            So luong-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,7 +109,7 @@
                     android:text="Số lượng: 9"
                     android:textSize="16dp" />
             </LinearLayout>
-
+<!--            Dia chi-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,7 +131,7 @@
                     android:text="96 Định Công"
                     android:textSize="16dp" />
             </LinearLayout>
-
+<!--            Thoi gian dang tai-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,14 +153,19 @@
                     android:text="1 giờ trước"
                     android:textSize="16dp" />
             </LinearLayout>
+<!--            Thong tin nguoi dang tai-->
             <LinearLayout
+                android:id="@+id/userInfo"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="horizontal"
                 android:background="@drawable/avatar_user_layout"
-                android:gravity="center">
+                android:gravity="center"
+                android:onClick="userInfo_onClick"
+                android:focusable="true"
+                android:clickable="true">
 
                 <ImageView
                     android:id="@+id/imgUserPost"
@@ -169,7 +177,7 @@
                     android:clipToOutline="true"
                     android:clickable="false"
                     android:focusable="false"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="10dp" />
 
                 <TextView
                     android:id="@+id/tvNameUser"
@@ -177,8 +185,11 @@
                     android:layout_height="match_parent"
                     android:text="User A"
                     android:textSize="18dp"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:gravity="center_vertical"/>
             </LinearLayout>
+<!--            Mo ta san pham-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

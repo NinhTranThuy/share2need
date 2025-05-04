@@ -1,6 +1,7 @@
 package com.example.share2need.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.share2need.R;
+import com.example.share2need.activities.ProductDetailActivity;
 import com.example.share2need.models.Product;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
@@ -61,6 +63,11 @@ public class FavouriteProductAdapter extends RecyclerView.Adapter<FavouriteProdu
 
         holder.tvTitle.setText(product.getName());
         holder.tvDescription.setText(product.getDescription());
+        holder.itemView.setOnClickListener( v ->{
+            Intent productIntent = new Intent(context, ProductDetailActivity.class);
+            productIntent.putExtra("productId", product.getId());
+            context.startActivity(productIntent);
+        });
 
         // Load ảnh sản phẩm
         if (product.getImages() != null && !product.getImages().isEmpty()) {

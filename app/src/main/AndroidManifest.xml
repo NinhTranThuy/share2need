@@ -22,11 +22,26 @@
             android:name=".activities.EditProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.OrderDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CategoryProductListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChatListActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ChatDetailActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activities.PostActivity"
             android:exported="false" />
@@ -40,7 +55,7 @@
             android:name=".activities.ProductDetailActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

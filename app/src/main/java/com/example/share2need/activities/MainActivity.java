@@ -1,4 +1,4 @@
-package com.example.share2need;
+package com.example.share2need.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,10 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.share2need.activities.ChatListActivity;
-import com.example.share2need.activities.FavoriteActivity;
-import com.example.share2need.activities.PostActivity;
-import com.example.share2need.activities.UserProfileActivity;
+import com.example.share2need.R;
 import com.example.share2need.adapters.ProductAdapter;
 import com.example.share2need.firebase.ProductRepository;
 import com.example.share2need.firebase.UserRepository;
@@ -57,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnGoUserProfile;
     //Bao gio co Login Firebase Auth thi bo
     String userID = "u1";
+    Location currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
         Log.d("Network", "Online: " + isConnected);
         FirebaseFirestore.setLoggingEnabled(true); // Thêm vào onCreate()
+
         initDataView();
 
         initData();
@@ -145,6 +144,11 @@ public class MainActivity extends AppCompatActivity {
                     if (location != null) {
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
+
+                        currentLocation = location;
+                        Log.e("ErrorLocation" , currentLocation.toString() + "1");
+                        Toast.makeText(this, "longitude = "+longitude+" latitude = "+latitude, Toast.LENGTH_SHORT).show();
+
                         getAddressFromLocation(latitude, longitude);
                     } else {
                         // Nếu không có vị trí cuối cùng, yêu cầu cập nhật vị trí mới
@@ -174,9 +178,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onLocationResult(LocationResult locationResult) {
                         super.onLocationResult(locationResult);
                         fusedLocationClient.removeLocationUpdates(this);
-
                         if (locationResult != null && locationResult.getLastLocation() != null) {
                             Location location = locationResult.getLastLocation();
+                            currentLocation = locationResult.getLastLocation();
+                            Toast.makeText(MainActivity.this, "longitude = "+location.getLongitude()+" latitude = "+location.getLatitude(), Toast.LENGTH_SHORT).show();
+
                             getAddressFromLocation(location.getLatitude(), location.getLongitude());
                         } else {
                             Toast.makeText(MainActivity.this, "Khong the tim thay vi tri", Toast.LENGTH_SHORT).show();
@@ -185,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 },
                 Looper.getMainLooper()
         );
+
     }
     // Lấy địa chỉ từ tọa độ
     private void getAddressFromLocation(double latitude, double longitude) {
@@ -192,11 +199,17 @@ public class MainActivity extends AppCompatActivity {
         try {
             List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
             if (addressList != null && !addressList.isEmpty()) {
+                //Lay dia chi tuong doi
                 Address address = addressList.get(0);
                 String fullAddress = address.getAddressLine(0);
+
+                //Hien dia chi tuong doi
                 TextView tvAddress = findViewById(R.id.tvAdress);
                 tvAddress.setText(fullAddress);
+
+                //Luu dia chi tuong doi vao Firebase
                 userRepository.updateUserAddress(userID, fullAddress);
+
                 // Có thể hiển thị thêm thông tin khác nếu cần
                 String locationInfo = String.format(
                         "Vị trí: %.6f, %.6f\nĐịa chỉ: %s",
@@ -204,6 +217,9 @@ public class MainActivity extends AppCompatActivity {
                         longitude,
                         fullAddress
                 );
+
+//                Toast.makeText(MainActivity.this, locationInfo, Toast.LENGTH_SHORT).show();
+
             } else {
                 Toast.makeText(this, "Không tìm thấy địa chỉ", Toast.LENGTH_SHORT).show();
             }
@@ -236,16 +252,44 @@ public class MainActivity extends AppCompatActivity {
     }
     public void order_onClick(MenuItem item) {
     }
-
     public void postActivity_onClick(View view) {
         Intent postIntent = new Intent(this, PostActivity.class);
         //Bao gio co Login Firebase Auth thi bo
         postIntent.putExtra("userID", userID);
         startActivity(postIntent);
     }
-
     public void chatListActivity_onClick(View view) {
         Intent intent  = new Intent(this, ChatListActivity.class);
+        startActivity(intent);
+    }
+    public void categoryProductListActivity_onClick(View view) {
+        if (view.getId() == R.id.categorize1) {
+            Intent intent = new Intent(this, CategoryProductListActivity.class);
+            intent.putExtra("categoryName", "Thực phẩm tươi sống");
+            startActivity(intent);
+        }
+
+        if (view.getId() == R.id.categorize2) {
+            Intent intent = new Intent(this, CategoryProductListActivity.class);
+            intent.putExtra("categoryName", "Lương thực");
+            startActivity(intent);
+        }
+
+        if (view.getId() == R.id.categorize3) {
+            Intent intent = new Intent(this, CategoryProductListActivity.class);
+            intent.putExtra("categoryName", "Thực phẩm đóng gói");
+            startActivity(intent);
+        }
+
+        if (view.getId() == R.id.categorize4) {
+            Intent intent = new Intent(this, CategoryProductListActivity.class);
+            intent.putExtra("categoryName", "Nhu yếu phẩm khác");
+            startActivity(intent);
+        }
+    }
+    public void seachActivity_onClick(View view) {
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra("currentLocation", currentLocation);
         startActivity(intent);
     }
 }

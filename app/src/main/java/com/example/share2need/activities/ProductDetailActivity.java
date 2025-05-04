@@ -1,7 +1,10 @@
 package com.example.share2need.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,6 +30,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     TextView tvNameProduct = null, tvCategory = null, tvQuantity = null, tvAddress = null,
             tvcreatedAt = null, tvDescription = null, tvNameUser=null;
     ImageView imageProduct = null, imgUserPost = null;
+    String userID = null;
+    String productId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +62,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void initData() {
         Intent intent = getIntent();
-        String productId = intent.getStringExtra("productId").trim();
-        Log.e("productId", productId);
+        productId = intent.getStringExtra("productId").trim();
 
         productRepository = new ProductRepository();
         productRepository.getProductById(productId, new ProductRepository.ProductCallback() {
@@ -71,6 +75,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                             Log.e("ProductError", "Product is null");
                             return;
                         }
+
+                        //Lay id cua nguoi dang san pham
+                        userID = product.getUserId();
 
                         // Hiển thị thông tin cơ bản với kiểm tra null
                         if (tvNameProduct != null) {
@@ -154,19 +161,27 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 product.getImages().get(0) : null;
 
                         if (imageProduct != null) {
-                            try {
-                                if (imageUrl != null) {
-                                    Glide.with(imageProduct.getContext())
+                            if (imageUrl != null) {
+                                if (isValidUrl(imageUrl)) {
+                                    // 🔗 Ảnh là URL
+                                    Glide.with(imageProduct)
                                             .load(imageUrl)
                                             .placeholder(R.drawable.ic_launcher_background)
                                             .error(R.drawable.broken_image_24px)
                                             .into(imageProduct);
                                 } else {
-                                    imageProduct.setImageResource(R.drawable.ic_launcher_background);
+                                    // 🧬 Ảnh là Base64
+                                    try {
+                                        byte[] decodedBytes = Base64.decode(imageUrl, Base64.DEFAULT);
+                                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                                        imageProduct.setImageBitmap(bitmap);
+                                    } catch (Exception e) {
+                                        Log.e("Base64Error", "Lỗi decode ảnh base64", e);
+                                        imageProduct.setImageResource(R.drawable.broken_image_24px);
+                                    }
                                 }
-                            } catch (Exception e) {
-                                Log.e("ImageError", "Error loading image", e);
-                                imageProduct.setImageResource(R.drawable.broken_image_24px);
+                            } else {
+                                imageProduct.setImageResource(R.drawable.ic_launcher_background);
                             }
                         }
                     } catch (Exception e) {
@@ -193,11 +208,15 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     public void openChatActivity_onClick(View view) {
-//        Intent intent = new Intent(this, ChatActivity.class);
-//        intent.putExtra("product_id", 1);
-//        startActivity(intent);
+        Intent intent = new Intent(this, ChatDetailActivity.class);
+        intent.putExtra("product_id", productId);
+        intent.putExtra("user_id_OwnProduct", userID);
+        startActivity(intent);
     }
 
+    private boolean isValidUrl(String string) {
+        return string.startsWith("http://") || string.startsWith("https://");
+    }
     public static String getTimeAgo(long timestamp) {
         long now = System.currentTimeMillis();
         long diffInMillis = now - timestamp;
@@ -225,5 +244,10 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     public void backActivity_onClick(View view) {
         finish();
+    }
+    public void userInfo_onClick(View view) {
+        Intent intent = new Intent(this, UserProfileActivity.class);
+        intent.putExtra("userId", userID);
+        startActivity(intent);
     }
 }

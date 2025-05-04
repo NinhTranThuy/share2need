@@ -2,6 +2,9 @@ package com.example.share2need.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +40,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.productList = productList != null ? productList : new ArrayList<>();
     }
 
+    private boolean isValidUrl(String string) {
+        return string.startsWith("http://") || string.startsWith("https://");
+    }
+
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -51,14 +58,26 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         //Hien anh san pham
         String imageUrl = (product.getImages() != null && !product.getImages().isEmpty()) ?
                     product.getImages().get(0) : null;
-        Log.e("ImageTest", imageUrl);
         if (holder.imgProduct != null) {
             if (imageUrl != null) {
-                Glide.with(holder.itemView.getContext())
-                        .load(imageUrl)
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.broken_image_24px)
-                        .into(holder.imgProduct);
+                if (isValidUrl(imageUrl)) {
+                    // 🔗 Ảnh là URL
+                    Glide.with(holder.itemView.getContext())
+                            .load(imageUrl)
+                            .placeholder(R.drawable.ic_launcher_background)
+                            .error(R.drawable.broken_image_24px)
+                            .into(holder.imgProduct);
+                } else {
+                    // 🧬 Ảnh là Base64
+                    try {
+                        byte[] decodedBytes = Base64.decode(imageUrl, Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                        holder.imgProduct.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        Log.e("Base64Error", "Lỗi decode ảnh base64", e);
+                        holder.imgProduct.setImageResource(R.drawable.broken_image_24px);
+                    }
+                }
             } else {
                 holder.imgProduct.setImageResource(R.drawable.ic_launcher_background);
             }
@@ -75,27 +94,33 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         userRepository.getUserInfo(product.getUserId(), new UserRepository.UserCallback() {
             @Override
             public void onUserLoaded(User user) {
-                if (holder.tvUserPostName != null) {
-                    holder.tvUserPostName.setText(user.getFullname() != null ? user.getFullname() : "Không thấy user");
-                }
-
-                String imageAvaUrl = (user.getProfileImage()!= null && !user.getProfileImage().isEmpty()) ?
+                String imageUrl = (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) ?
                         user.getProfileImage() : null;
 
+                holder.tvUserPostName.setText(user.getFullname());
+
                 if (holder.imgUserPost != null) {
-                    try {
-                        if (imageAvaUrl != null) {
-                            Glide.with(holder.imgUserPost .getContext())
-                                    .load(imageAvaUrl)
+                    if (imageUrl != null) {
+                        if (isValidUrl(imageUrl)) {
+                            // 🔗 Ảnh là URL
+                            Glide.with(holder.itemView.getContext())
+                                    .load(imageUrl)
                                     .placeholder(R.drawable.ic_launcher_background)
                                     .error(R.drawable.broken_image_24px)
-                                    .into(holder.imgUserPost );
+                                    .into(holder.imgUserPost);
                         } else {
-                            holder.imgUserPost .setImageResource(R.drawable.ic_launcher_background);
+                            // 🧬 Ảnh là Base64
+                            try {
+                                byte[] decodedBytes = Base64.decode(imageUrl, Base64.DEFAULT);
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                                holder.imgUserPost.setImageBitmap(bitmap);
+                            } catch (Exception e) {
+                                   Log.e("Base64Error", "Lỗi decode ảnh base64", e);
+                                holder.imgUserPost.setImageResource(R.drawable.broken_image_24px);
+                            }
                         }
-                    } catch (Exception e) {
-                        Log.e("ImageError", "Error loading image", e);
-                        holder.imgUserPost .setImageResource(R.drawable.broken_image_24px);
+                    } else {
+                        holder.imgUserPost.setImageResource(R.drawable.ic_launcher_background);
                     }
                 }
             }

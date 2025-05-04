@@ -3,9 +3,10 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
 public class User {
-
     private String id;
+    private String username;
     private String fullname;
+    private String password;
     private String email;
     private String phone;
     private String address;
@@ -19,10 +20,12 @@ public class User {
     public User() {}
 
     // Constructor đầy đủ
-    public User(String id, String fullname, String email, String phone, String address,
+    public User(String id, String username, String fullname, String password, String email, String phone, String address,
                 String profileImage, double rating, int totalRatings,
                 Timestamp createdAt, GeoPoint geopointUser) {
         this.id = id;
+        this.username = username;
+        this.password = password;
         this.fullname = fullname;
         this.email = email;
         this.phone = phone;
@@ -113,5 +116,21 @@ public class User {
 
     public void setGeopointUser(GeoPoint geopointUser) {
         this.geopointUser = geopointUser;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

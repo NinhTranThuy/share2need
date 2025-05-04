@@ -27,7 +27,7 @@ public class FavouriteProductAdapter extends RecyclerView.Adapter<FavouriteProdu
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
     //String userId = auth.getCurrentUser().getUid();
-    String userId = "userA";
+    String userId = "u1";
 
     public FavouriteProductAdapter(Context context, List<Product> productList) {
         this.context = context;

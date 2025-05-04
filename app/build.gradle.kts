@@ -62,4 +62,9 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    //thu vien dung ggMap
+    implementation ("com.google.android.gms:play-services-maps:17.0.1")
+    implementation ("com.google.android.libraries.places:places:3.2.0")
+
 }

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -34,9 +36,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class PostActivity extends AppCompatActivity {
@@ -156,7 +160,6 @@ public class PostActivity extends AppCompatActivity {
         }
 //        uploadImagesToFirebase(listImage);
         convertUriToBase64(listImage);
-
     }
     //Lay ra tung anh trong listImage<Uri> de cho vao Layout
     private void addImageToContainer(Uri imageUri){
@@ -257,20 +260,46 @@ public class PostActivity extends AppCompatActivity {
         btnNoti.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
         btnNoti.setBackgroundColor(getResources().getColor(R.color.green));
     }
-
-
     public void addProduct_onClick(View view) {
         String productName = edtProductName.getText().toString();
         int quantity = Integer.parseInt(edtQuantity.getText().toString());
         String description = edtDescription.getText().toString();
-        String address = edtAddress.getText().toString();
         String category = spinner.getSelectedItem().toString();
+        String address = edtAddress.getText().toString();
+        String addressHint = edtAddress.getHint().toString();
+        if(address.equals(addressHint)){
+            productRepository.insertProrduct(productName, quantity, description, category,uploadedUrls,address, geoPoint);
+        } else {
+            GeoPoint newGeoPoint = getGeoPointFromAddress(address);;
+            productRepository.insertProrduct(productName, quantity, description, category,uploadedUrls,address, newGeoPoint);
+        }
 
-        productRepository.insertProrduct(productName, quantity, description, category,uploadedUrls,address, geoPoint);
+
         //finish();
     }
+
+    private GeoPoint getGeoPointFromAddress(String newAddress) {
+        Geocoder geocoder = new Geocoder(PostActivity.this, Locale.getDefault());
+        try {
+            List<android.location.Address> addressList = geocoder.getFromLocationName(newAddress, 1);
+            if (addressList != null && !addressList.isEmpty()) {
+                android.location.Address location = addressList.get(0);
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+
+                // Ví dụ in ra
+                Log.d("Geocoding", "Lat: " + latitude + ", Lng: " + longitude);
+                return new GeoPoint(latitude, longitude);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //Nut quay lai
     public void backActivity_onClick(View view) {
         finish();
     }
 }
+

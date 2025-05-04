@@ -201,7 +201,6 @@
                     android:hint="Địa chỉ"
                     android:textSize="14dp"
                     android:padding="10dp"
-                    android:enabled="false"
                     android:background="@drawable/avatar_user_layout"
                     android:inputType="text"/>
             </LinearLayout>

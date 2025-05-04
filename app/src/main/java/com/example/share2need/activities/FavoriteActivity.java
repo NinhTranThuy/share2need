@@ -24,6 +24,7 @@ public class FavoriteActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private ListenerRegistration listener;
 
+
     private String currentUserId = "u1"; // Bạn có thể lấy từ FirebaseAuth.getInstance().getCurrentUser().getUid()
 
     @Override
@@ -33,7 +34,6 @@ public class FavoriteActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewFavorites);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
 
         db = FirebaseFirestore.getInstance();
         loadFavorites();

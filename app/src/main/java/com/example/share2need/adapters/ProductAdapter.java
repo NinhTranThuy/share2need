@@ -22,10 +22,13 @@ import com.example.share2need.activities.ProductDetailActivity;
 import com.example.share2need.firebase.UserRepository;
 import com.example.share2need.models.Product;
 import com.example.share2need.models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
@@ -139,6 +142,34 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             intent.putExtra("productId", product.getId());
             context.startActivity(intent);
         });
+        holder.tvStar.setOnClickListener(v -> {
+            //String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            String userId = "u1";
+            String productId = product.getId();
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("favorites")
+                    .document(userId)
+                    .update(productId, true)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("Favorite", "Đã thêm vào danh sách yêu thích");
+                        // Có thể đổi background hoặc hiện thông báo
+                        holder.tvStar.setBackgroundResource(R.drawable.ic_star_filled);
+                    })
+                    .addOnFailureListener(e -> {
+                        // Nếu chưa có document, thì tạo mới
+                        db.collection("favorites")
+                                .document(userId)
+                                .set(new HashMap<String, Object>() {{
+                                    put(productId, true);
+                                }})
+                                .addOnSuccessListener(unused -> {
+                                    Log.d("Favorite", "Tạo mới và thêm sản phẩm vào yêu thích");
+                                    holder.tvStar.setBackgroundResource(R.drawable.ic_star_filled);
+                                })
+                                .addOnFailureListener(ex -> Log.e("Favorite", "Lỗi: ", ex));
+                    });
+        });
     }
 
     @Override
@@ -171,7 +202,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
     public class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView imgProduct, imgUserPost;
-        TextView tvNameProduct, tvUserPostName, tvDistance, tvCreatedAt, tvStatus ;
+        TextView tvNameProduct, tvUserPostName, tvDistance, tvCreatedAt, tvStatus, tvStar ;
         CardView cardProduct;
 
         public ProductViewHolder(@NonNull View itemView) {
@@ -184,6 +215,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             tvStatus = itemView.findViewById(R.id.tvStatus);
             cardProduct = itemView.findViewById(R.id.cardProduct);
             imgUserPost = itemView.findViewById(R.id.imgUserPost);
+            tvStar = itemView.findViewById(R.id.tvStar);
         }
     }
 }

@@ -27,7 +27,7 @@ import java.util.List;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    private TextView fullnameText, emailText, phoneText, addressText, createdAtText, ratingText, DanhSachYeuThich;
+    private TextView fullnameText, emailText, phoneText, addressText, createdAtText, ratingText, DanhSachYeuThich, SuaThongTin;
     private ImageView avatarImage;
     private RecyclerView recyclerViewProductsList;
     private FirebaseFirestore db;
@@ -47,6 +47,11 @@ public class UserProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        SuaThongTin = findViewById(R.id.SuaThongTin);
+        SuaThongTin.setOnClickListener(v -> {
+            Intent intent = new Intent(UserProfileActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+        });
         // Khởi tạo Firebase
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -123,5 +128,30 @@ public class UserProfileActivity extends AppCompatActivity {
 
     public void backActivity_onClick(View view) {
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
+            String fullname = data.getStringExtra("fullname");
+            String email = data.getStringExtra("email");
+            String phone = data.getStringExtra("phone");
+            String address = data.getStringExtra("address");
+            String profileImage = data.getStringExtra("profileImage");
+
+            fullnameText.setText(fullname != null ? fullname : "");
+            emailText.setText(email != null ? email : "");
+            phoneText.setText(phone != null ? phone : "");
+            addressText.setText(address != null ? address : "");
+
+            if (profileImage != null && !profileImage.isEmpty()) {
+                Glide.with(this)
+                        .load(profileImage)
+                        .placeholder(R.drawable.baseline_account_circle_24)
+                        .into(avatarImage);
+            }
+        }
     }
 }

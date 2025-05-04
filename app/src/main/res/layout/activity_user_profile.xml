@@ -188,6 +188,16 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/SuaThongTin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sửa thong tin ca nhan"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
                 android:id="@+id/DanhSachYeuThich"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

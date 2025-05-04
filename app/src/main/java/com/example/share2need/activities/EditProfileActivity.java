@@ -1,12 +1,22 @@
 package com.example.share2need.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +36,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,14 +47,15 @@ import java.util.Map;
 public class EditProfileActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private EditText editFullName, editEmail, editPhone, editAddress;
-    private Button buttonSave;
+    private LinearLayout buttonSave, imagePostArea = null;
+    TextView tvAddImage = null, tvButtonPost = null;
     private FirebaseFirestore db;
     private FusedLocationProviderClient fusedLocationClient;
-
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private GoogleMap mMap;
     private LatLng selectedLocation;
     private Marker marker;
+    String imageUrl;
 
     private final String userId = "u1"; // Giả lập user
 
@@ -56,6 +69,8 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
         editPhone = findViewById(R.id.editPhone);
         editAddress = findViewById(R.id.editAddress);
         buttonSave = findViewById(R.id.buttonSave);
+        imagePostArea = findViewById(R.id.imagePostArea);
+        tvButtonPost = findViewById(R.id.tvButtonPost);
 
         db = FirebaseFirestore.getInstance();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -103,6 +118,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
             updates.put("email", email);
             updates.put("phone", phone);
             updates.put("address", address);
+            updates.put("profileImage", imageUrl);
 
             if (selectedLocation != null) {
                 updates.put("geopointUser", new GeoPoint(selectedLocation.latitude, selectedLocation.longitude));
@@ -151,7 +167,6 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -187,4 +202,64 @@ public class EditProfileActivity extends AppCompatActivity implements OnMapReady
             e.printStackTrace();
         }
     }
+    public void addImage_onClick(View view) {
+        tvAddImage = view.findViewById(R.id.tvAddImage);
+        tvAddImage.setVisibility(View.GONE);
+        openImagePicker();
+    }
+    private void openImagePicker() {
+
+        Intent pickerImageIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        pickerImageIntent.setType("image/*");
+        pickerImageIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        startActivityForResult(Intent.createChooser(pickerImageIntent,"Chọn ảnh"), 1);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            if (data.getClipData() != null) {
+                addImageToContainer(data.getData());
+            }
+        }
+        convertUriToBase64(data.getData());
+    }
+    //Lay ra tung anh trong listImage<Uri> de cho vao Layout
+    private void addImageToContainer(Uri imageUri){
+        ImageView imageView = new ImageView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                (int) (90 * getResources().getDisplayMetrics().density),
+                (int) (90 * getResources().getDisplayMetrics().density)
+        );
+        params.setMargins(5, 5, 5, 5);
+        imageView.setLayoutParams(params);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setImageURI(imageUri);
+        imagePostArea.addView(imageView);
+    }
+    private void convertUriToBase64(Uri imageUris) {
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(imageUris);
+                if (inputStream == null) {
+                    Log.e("PostActivity", "inputStream null cho Uri: " + imageUris.toString());
+                }
+
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                inputStream.close(); // ⚠️ Đóng stream sau khi dùng
+
+                if (bitmap != null) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
+                    byte[] imageBytes = outputStream.toByteArray();
+                    outputStream.close();
+
+                    imageUrl = Base64.encodeToString(imageBytes, Base64.NO_WRAP); // dùng NO_WRAP nếu muốn chuỗi gọn
+                }
+
+            } catch (Exception e) {
+                Log.e("EditProfileActivity", "Lỗi khi chuyển ảnh sang Base64: " + e.getMessage());
+            }
+    }
+
+
 }

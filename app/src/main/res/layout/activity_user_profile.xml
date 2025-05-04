@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="15dp">
 
             <ImageView
                 android:id="@+id/avatarImage"
@@ -191,11 +191,13 @@
                 android:id="@+id/SuaThongTin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sửa thong tin ca nhan"
+                android:text="Sửa thông tin cá nhân"
                 android:textStyle="bold"
                 android:textSize="20dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/frame_category_layout"
+                android:padding="10dp"/>
 
             <TextView
                 android:id="@+id/DanhSachYeuThich"
@@ -205,7 +207,9 @@
                 android:textStyle="bold"
                 android:textSize="20dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/frame_category_layout"
+                android:padding="10dp"/>
 
             <TextView
                 android:layout_width="match_parent"

@@ -1,77 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
-
     <LinearLayout
+        android:id="@+id/nav_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/editFullName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Họ và tên"
-            android:inputType="textPersonName"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text" />
-
-        <EditText
-            android:id="@+id/editEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="12dp"
-            android:layout_marginTop="8dp"
-            android:background="@android:drawable/edit_text" />
-
-        <EditText
-            android:id="@+id/editPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Số điện thoại"
-            android:inputType="phone"
-            android:padding="12dp"
-            android:layout_marginTop="8dp"
-            android:background="@android:drawable/edit_text" />
-
-        <EditText
-            android:id="@+id/editAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Địa chỉ"
-            android:inputType="textPostalAddress"
-            android:padding="12dp"
-            android:layout_marginTop="8dp"
-            android:background="@android:drawable/edit_text"
-            android:enabled="false" />
-
-        <TextView
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chọn vị trí trên bản đồ:"
-            android:textSize="16sp"
-            android:layout_marginTop="16dp"
-            android:textStyle="bold" />
-
-        <fragment
-            android:id="@+id/mapContainer"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:backgroundTint="@color/white"
+            android:contentDescription="Button Back"
+            android:scaleType="fitCenter"
+            android:src="@drawable/arrow_back_ios_24px"
+            android:onClick="backActivity_onClick"/>
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginTop="8dp" />
+            android:layout_height="wrap_content"
+            android:text="Đăng bài"
+            android:textColor="#000000"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-        <Button
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/nav_top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/nav_bottom"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hình ảnh sản phẩm"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    />
+                <LinearLayout
+                    android:id="@+id/imagePostArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="@drawable/image_post_frame"
+                    android:tag="Chọn ảnh"
+                    android:onClick="addImage_onClick">
+                    <TextView
+                        android:id="@+id/tvAddImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+ Chọn ảnh"
+                        android:textAlignment="center"
+                        android:clickable="false"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Họ và tên"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    />
+                <EditText
+                    android:id="@+id/editFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Nhập họ và tên"
+                    android:textSize="14dp"
+                    android:padding="10dp"
+                    android:background="@drawable/avatar_user_layout"
+                    android:inputType="textPersonName"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    />
+                <EditText
+                    android:id="@+id/editEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Nhập Email"
+                    android:textSize="14dp"
+                    android:padding="10dp"
+                    android:background="@drawable/avatar_user_layout"
+                    android:inputType="textEmailAddress"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Số điện thoại"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    />
+                <EditText
+                    android:id="@+id/editPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Nhập số điện thoại"
+                    android:textSize="14dp"
+                    android:padding="10dp"
+                    android:background="@drawable/avatar_user_layout"
+                    android:inputType="phone"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Địa chỉ"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    />
+                <EditText
+                    android:id="@+id/editAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Nhập địa chỉ"
+                    android:textSize="14dp"
+                    android:padding="10dp"
+                    android:background="@drawable/avatar_user_layout"
+                    android:inputType="textPostalAddress"
+                    android:enabled="false"/>
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chọn vị trí trên bản đồ:"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                android:textStyle="bold" />
+
+            <fragment
+                android:id="@+id/mapContainer"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:foregroundGravity="right"
+        >
+        <LinearLayout
             android:id="@+id/buttonSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lưu thông tin"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
-            android:textColor="@android:color/white" />
-    </LinearLayout>
-</ScrollView>
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:background="@drawable/button_layout"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_margin="10dp"
+            android:clickable="false">
+            <ImageView
+                android:id="@+id/btnNoti"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:contentDescription="btnPost"
+                android:src="@drawable/edit_square_24px"
+                android:background="@color/green"
+                app:tint="@color/white"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:clickable="false"/>
+            <!-- Product Title -->
+            <TextView
+                android:id="@+id/tvButtonPost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lưu thông tin"
+                android:textSize="14dp"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:clickable="false"/>
+        </LinearLayout>
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -101,7 +101,6 @@ public class UserProfileActivity extends AppCompatActivity {
                         .placeholder(R.drawable.baseline_account_circle_24)
                         .into(avatarImage);
             }
-
             //Hien danh sach san pham
             ProductRepository productRepository = new ProductRepository();
             productRepository.getAllProductByUserID(userId).observe(this,products -> {
@@ -114,11 +113,6 @@ public class UserProfileActivity extends AppCompatActivity {
                     Log.e("MainActivityy", "Received null products");
                 }
             });
-
-
-
-
-
         } else {
             Toast.makeText(this, "Không tìm thấy người dùng", Toast.LENGTH_SHORT).show();
         }

@@ -216,42 +216,6 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-    //PHONG TOA: De tam o day
-    private void uploadImagesToFirebase(List<Uri> imageUris) {
-        uploadedUrls.clear(); // Clear nếu có ảnh cũ
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("images");
-
-        final int[] uploadedCount = {0};
-        int totalImages = imageUris.size();
-
-        for (Uri uri : imageUris) {
-            String fileName = UUID.randomUUID().toString() + ".jpg";
-            StorageReference fileRef = storageRef.child(fileName);
-
-            fileRef.putFile(uri)
-                    .addOnSuccessListener(taskSnapshot ->
-                            fileRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                                uploadedUrls.add(downloadUri.toString());
-                                uploadedCount[0]++;
-
-                                if (uploadedCount[0] == totalImages) {
-                                    // ✅ Tất cả ảnh đã được upload thành công
-                                    enablePostButton();
-                                }
-                            }))
-                    .addOnFailureListener(e -> {
-                        uploadedCount[0]++;
-                        Log.e("FirebaseUpload", "Lỗi upload ảnh: " + e.getMessage());
-
-                        if (!uploadedUrls.isEmpty()) {
-                            enablePostButton(); // Cho phép đăng bài dù 1 số ảnh bị lỗi
-                        }
-                    });
-        }
-    }
-    //
     private void enablePostButton() {
         btnPost.setEnabled(true);
         btnPost.setClickable(true);

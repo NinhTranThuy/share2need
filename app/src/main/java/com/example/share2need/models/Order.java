@@ -1,38 +1,49 @@
 package com.example.share2need.models;
 
+import com.google.firebase.Timestamp;
+
 public class Order {
-    private String bookingId;
+    private String orderId;
+    private String orderState;
     private String productId;
     private String giverId;
     private String receiverId;
     private String productName;
-    private int quantity;
-    private double price;
-    private String status;
+    private long quantity;
     private long timestamp;
     private String chatId;
     public Order() {}
-    public Order(String bookingId, String productId, String giverId, String receiverId,
-                 String productName, int quantity, double price, String status,
-                 long timestamp, String note, String chatId) {
-        this.bookingId = bookingId;
+    public Order(String orderId,String orderState, String productId, String receiverId, String giverId,
+                 String productName, long quantity, long timestamp, String chatId) {
+        this.orderId = orderId;
+        this.orderState = orderState;
+        //Thong tin dat
         this.productId = productId;
-        this.giverId = giverId;
         this.receiverId = receiverId;
+        this.giverId = giverId;
+        //Thong tin san pham
         this.productName = productName;
         this.quantity = quantity;
-        this.price = price;
-        this.status = status;
+        //Thoi gian dat hang
         this.timestamp = timestamp;
+        //Doan chat
         this.chatId = chatId;
     }
 
-    public String getBookingId() {
-        return bookingId;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setBookingId(String bookingId) {
-        this.bookingId = bookingId;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getOrderState() {
+        return orderState;
+    }
+
+    public void setOrderState(String orderState) {
+        this.orderState = orderState;
     }
 
     public String getProductId() {
@@ -67,28 +78,12 @@ public class Order {
         this.productName = productName;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public long getTimestamp() {

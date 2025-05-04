@@ -48,7 +48,6 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.messageList = messageList;
         this.currentUserId = currentUserId;
     }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -62,8 +61,6 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return new LeftViewHolder(view);
         }
     }
-
-
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messageList.get(position);
@@ -191,12 +188,10 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return fullFormat.format(messageTime.getTime());
         }
     }
-
     @Override
     public int getItemCount() {
         return messageList.size();
     }
-
     @Override
     public int getItemViewType(int position) {
         Message message = messageList.get(position);
@@ -217,7 +212,6 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 //            userAvatar = itemView.findViewById(R.id.userAvatar);
         }
     }
-
     static class LeftViewHolder extends RecyclerView.ViewHolder {
         TextView tvMessageText, tvMessageTime;
         ImageView userAvatar;

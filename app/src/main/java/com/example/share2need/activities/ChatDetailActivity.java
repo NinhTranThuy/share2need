@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.share2need.R;
 import com.example.share2need.adapters.ChatDetailAdapter;
+import com.example.share2need.firebase.OrderRepository;
 import com.example.share2need.firebase.ProductRepository;
 import com.example.share2need.firebase.UserRepository;
 import com.example.share2need.models.ChatSummary;
@@ -63,6 +64,7 @@ public class ChatDetailActivity extends AppCompatActivity {
     //Baoh co Login Firebase thi xoa
     String currentUserId = "u1";
     String productId, receiverUserId;
+    String chatId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,16 +92,13 @@ public class ChatDetailActivity extends AppCompatActivity {
 
                               @Override
                               public void onClick(DialogInterface dialogInterface, int i) {
-                                  if(processBooking())
-                                  Toast.makeText(ChatDetailActivity.this, "Đã đặt hàng!", Toast.LENGTH_SHORT).show();
+                                  processBooking();
                               }
                           })
                           .setNegativeButton("Hủy", null)
                           .show();
-
             }
         });
-
         productConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,31 +108,44 @@ public class ChatDetailActivity extends AppCompatActivity {
             }
         });
     }
-
-    private boolean processBooking() {
-        ProductRepository productRepository = new ProductRepository();
-        productRepository.updateProductStatus(productId, "đã đặt hàng",
-                new ProductRepository.UpdateStateProduct() {
-
+    private void processBooking() {
+        OrderRepository orderRepository = new OrderRepository();
+        orderRepository.createOrder(currentUserId, receiverUserId, productId,chatId,
+                new OrderRepository.createOrderCallback() {
             @Override
-            public void onUpdateSuccess() {
-                new AlertDialog.Builder(ChatDetailActivity.this)
-                        .setMessage("Bạn đã đặt thành công!")
-                        .setPositiveButton("OK", null)
-                        .show();
-                Intent returnHome = new Intent(ChatDetailActivity.this, MainActivity.class);
-                startActivity(returnHome);
-                finish();
+            public void onCreateSuccess(String orderId) {
+                ProductRepository productRepository = new ProductRepository();
+                productRepository.updateProductStatus(productId, "đã đặt hàng",
+                        new ProductRepository.UpdateStateProduct() {
+                            @Override
+                            public void onUpdateSuccess() {
+                                new AlertDialog.Builder(ChatDetailActivity.this)
+                                        .setMessage("Bạn đã đặt thành công!")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Intent intent = new Intent(ChatDetailActivity.this, OrderDetailActivity.class);
+                                                intent.putExtra("orderId", orderId);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        })
+                                        .show();
+                            }
+
+                            @Override
+                            public void onUpdateError(Exception e) {
+
+                            }
+                        });
             }
 
             @Override
-            public void onUpdateError(Exception e) {
+            public void onCreateError(Exception e) {
 
             }
         });
-        return true;
     }
-
     private void setupProductConfirm() {
         ProductRepository productRepository = new ProductRepository();
         productRepository.getProductById(productId, new ProductRepository.ProductCallback() {
@@ -192,26 +204,22 @@ public class ChatDetailActivity extends AppCompatActivity {
                     productConfirm.setVisibility(View.GONE);
                 }
             }
-
             @Override
             public void onProductNotFound() {
 
             }
-
             @Override
             public void onError(Exception e) {
 
             }
         });
     }
-
     private void setupRecyclerView() {
         messageList = new ArrayList<>();
         adapter = new ChatDetailAdapter(messageList, currentUserId);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
-
     private void processMessage() {
         UserRepository newUserRepository = new UserRepository();
         newUserRepository.getUserInfo(receiverUserId, new UserRepository.UserCallback() {
@@ -232,7 +240,7 @@ public class ChatDetailActivity extends AppCompatActivity {
                 });
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        String chatId = currentUserId.compareTo(receiverUserId) < 0
+        chatId = currentUserId.compareTo(receiverUserId) < 0
                 ? currentUserId + "-" + receiverUserId
                 : receiverUserId + "-" + currentUserId;
 

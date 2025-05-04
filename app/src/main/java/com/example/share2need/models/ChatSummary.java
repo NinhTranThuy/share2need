@@ -8,16 +8,18 @@ public class ChatSummary {
     private String userName;
     private String lastMessage;
     private long timestamp;
+    private String productId;
 
     public ChatSummary() {
     }
 
-    public ChatSummary(String userID,String receiverUserID, String userName, String lastMessage, long timestamp) {
+    public ChatSummary(String userID,String receiverUserID, String userName, String lastMessage, long timestamp, String productId) {
         this.userID = userID;
         this.receiverUserID = receiverUserID;
         this.userName = userName;
         this.lastMessage = lastMessage;
         this.timestamp = timestamp;
+        this.productId = productId;
     }
 
     public String getUserName() {
@@ -46,5 +48,13 @@ public class ChatSummary {
 
     public void setReceiverUserID(String receiverUserID) {
         this.receiverUserID = receiverUserID;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }

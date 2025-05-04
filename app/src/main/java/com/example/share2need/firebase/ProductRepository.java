@@ -30,12 +30,15 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class ProductRepository {
+    //Khai bao bien
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final MutableLiveData<List<Product>> productsLiveData = new MutableLiveData<>();
     private ListenerRegistration listener;
 
 //    Bao gio co Login Firebase thi bo
     String userID = "u1";
+
+    //Cac ham chinh
     public void insertProrduct(String nameProduct, int quantity, String description,
                                String category, List<String> listImage, String address, GeoPoint location){
         db.collection("products")
@@ -125,8 +128,6 @@ public class ProductRepository {
                         productsLiveData.postValue(null);
                         return;
                     }
-// Log số lượng document nhận được
-                    Log.d("FirestoreDebug", "Total documents: " + snapshots.size());
 
                     // Log từng document ID
                     for (DocumentChange dc : snapshots.getDocumentChanges()) {
@@ -139,7 +140,7 @@ public class ProductRepository {
                         for (DocumentSnapshot doc : snapshots) {
                             try {
                                 Product product = doc.toObject(Product.class);
-                                if (product != null) {
+                                if (product != null && "còn hàng".equals(product.getStatus())) {
                                     product.setId(doc.getId());
                                     products.add(product);
                                     Log.d("DocDebug", "Document: " + doc.getId() +
@@ -185,7 +186,6 @@ public class ProductRepository {
                 .addOnFailureListener(e -> liveData.setValue(null));
         return liveData;
     }
-
     public void searchProduct(String keyword, int selectedDistance, String category, Location userLocation, SearchCallback callback){
         CollectionReference productRef = db.collection("products");
         Query query = productRef;
@@ -243,6 +243,17 @@ public class ProductRepository {
             }
         });
     }
+    public void updateProductStatus(String productId, String stateProduct, UpdateStateProduct callback) {
+        db.collection("products")
+                .document(productId)
+                .update("status", stateProduct)
+                .addOnSuccessListener(task -> {
+                    callback.onUpdateSuccess();
+                })
+                .addOnFailureListener( e -> {
+                    callback.onUpdateError(e);
+                });
+    }
 
     private double getDistanceInKm(double lat1, double lon1, double lat2, double lon2) {
         float[] result = new float[1];
@@ -250,6 +261,7 @@ public class ProductRepository {
         return result[0] / 1000.0;
     }
 
+    //Interface
     public interface SearchCallback{
         public void onSearchSuccess(List<Product> products);
         public void onSearchError(Exception e);
@@ -258,5 +270,9 @@ public class ProductRepository {
         public void onProductLoaded(Product product);
         public void onProductNotFound();
         public void onError(Exception e);
+    }
+    public interface UpdateStateProduct{
+        public void onUpdateSuccess();
+        public void onUpdateError(Exception e);
     }
 }

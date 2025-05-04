@@ -17,7 +17,10 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="8dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/avatar_frame_layout"
+        android:clipToOutline="true"/>
 
     <TextView
         android:id="@+id/userName"

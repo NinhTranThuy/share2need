@@ -2,6 +2,8 @@ package com.example.share2need.activities;
 
 import static android.webkit.URLUtil.isValidUrl;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,6 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -76,26 +79,59 @@ public class ChatDetailActivity extends AppCompatActivity {
         setupProductConfirm();
         setupRecyclerView();
         processMessage();
+        btnConfirm = findViewById(R.id.btnConfirm);
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                  new AlertDialog.Builder(ChatDetailActivity.this)
+                          .setTitle("Xác nhận đặt hàng")
+                          .setMessage("Bạn có chắc chắn muốn đặt hàng?")
+                          .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
 
-//        btnConfirm.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(ChatDetailActivity.this, ConfirmProduct.class);
-//                intent.putExtra("product_id", productId);
-//                intent.putExtra("user_id_OwnProduct", receiverUserId);
-//                startActivity(intent);
-//            }
-//        });
+                              @Override
+                              public void onClick(DialogInterface dialogInterface, int i) {
+                                  if(processBooking())
+                                  Toast.makeText(ChatDetailActivity.this, "Đã đặt hàng!", Toast.LENGTH_SHORT).show();
+                              }
+                          })
+                          .setNegativeButton("Hủy", null)
+                          .show();
+
+            }
+        });
 
         productConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ChatDetailActivity.this, ProductDetailActivity.class);
-                intent.putExtra("product_id", productId);
+                intent.putExtra("productId", productId);
                 startActivity(intent);
-                finish();
             }
         });
+    }
+
+    private boolean processBooking() {
+        ProductRepository productRepository = new ProductRepository();
+        productRepository.updateProductStatus(productId, "đã đặt hàng",
+                new ProductRepository.UpdateStateProduct() {
+
+            @Override
+            public void onUpdateSuccess() {
+                new AlertDialog.Builder(ChatDetailActivity.this)
+                        .setMessage("Bạn đã đặt thành công!")
+                        .setPositiveButton("OK", null)
+                        .show();
+                Intent returnHome = new Intent(ChatDetailActivity.this, MainActivity.class);
+                startActivity(returnHome);
+                finish();
+            }
+
+            @Override
+            public void onUpdateError(Exception e) {
+
+            }
+        });
+        return true;
     }
 
     private void setupProductConfirm() {
@@ -103,7 +139,9 @@ public class ChatDetailActivity extends AppCompatActivity {
         productRepository.getProductById(productId, new ProductRepository.ProductCallback() {
             @Override
             public void onProductLoaded(Product product) {
-                if (product != null){
+                if (product != null && "còn hàng".equals(product.getStatus())){
+                    Log.d("checkDetail", String.valueOf(product != null && "còn hàng".equals(product.getStatus())));
+                    productConfirm.setVisibility(View.VISIBLE);
                     try {
                         // Kiểm tra product null
                         if (product == null) {
@@ -118,10 +156,9 @@ public class ChatDetailActivity extends AppCompatActivity {
                         if (tvQuantity != null) {
                             tvQuantity.setText(String.format("Số lượng: %d", product.getQuantity()));
                         }
-                        // Xử lý ảnh
+
                         String imageUrl = (product.getImages() != null && !product.getImages().isEmpty()) ?
                                 product.getImages().get(0) : null;
-
                         if (ivProduct != null) {
                             if (imageUrl != null) {
                                 if (isValidUrl(imageUrl)) {
@@ -150,7 +187,9 @@ public class ChatDetailActivity extends AppCompatActivity {
                         Log.e("ProductDisplay", "Error displaying product", e);
                     }
                 } else {
-                    tvNameProduct.setText("CRASH ROI");
+                    Log.d("checkDetail", String.valueOf(product != null && "còn hàng".equals(product.getStatus())));
+
+                    productConfirm.setVisibility(View.GONE);
                 }
             }
 
@@ -232,16 +271,48 @@ public class ChatDetailActivity extends AppCompatActivity {
                 String messageId = messagesRef.push().getKey();
                 messagesRef.child(messageId).setValue(message);
 
-                // Cập nhật ChatSummary
-                DatabaseReference chatSummaryRef = FirebaseDatabase.getInstance()
-                        .getReference("chatSummaries");
-                ChatSummary chatSummary = new ChatSummary(currentUserId,receiverUserId, "u1", messageText, System.currentTimeMillis());
-                chatSummaryRef.child(currentUserId).child(chatId).setValue(chatSummary);
+                newUserRepository.getUserInfo(currentUserId, new UserRepository.UserCallback(){
 
-                ChatSummary reverseSummary = new ChatSummary(receiverUserId,currentUserId, "u2", messageText, System.currentTimeMillis());
-                chatSummaryRef.child(receiverUserId).child(chatId).setValue(reverseSummary);
+                    @Override
+                    public void onUserLoaded(User user) {
+                        String userCurrentFullname = user.getFullname();
+                        DatabaseReference chatSummaryRef = FirebaseDatabase.getInstance()
+                                .getReference("chatSummaries");
+                        // Cập nhật ChatSummary cho current user (u1 nhìn thấy u2)
+                        ChatSummary chatSummary = new ChatSummary(
+                                currentUserId,                   // userID
+                                receiverUserId,                  // receiverUserID
+                                userName.getText().toString(),   // userName: tên người nhận để hiện lên list
+                                messageText,
+                                System.currentTimeMillis(),
+                                productId
+                        );
+                        chatSummaryRef.child(currentUserId).child(chatId).setValue(chatSummary);
 
-                messageInput.setText("");
+                        // Cập nhật ChatSummary cho receiver user (u2 nhìn thấy u1)
+                        ChatSummary reverseSummary = new ChatSummary(
+                                receiverUserId,                  // userID
+                                currentUserId,                   // receiverUserID
+                                userCurrentFullname,             // userName: tên người gửi để hiện lên list ****FIX CUNG, SAU THAY BANG AUTHEN
+                                messageText,
+                                System.currentTimeMillis(),
+                                productId
+                        );
+                        chatSummaryRef.child(receiverUserId).child(chatId).setValue(reverseSummary);
+
+                        messageInput.setText("");
+                    }
+
+                    @Override
+                    public void onUserNotFound() {
+
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
             }
         });
     }
@@ -259,7 +330,7 @@ public class ChatDetailActivity extends AppCompatActivity {
 
         tvNameProduct = findViewById(R.id.tvNameProduct);
         tvQuantity = findViewById(R.id.tvQuantity);
-        btnConfirm = findViewById(R.id.btnConfirm);
+
         productConfirm = findViewById(R.id.productConfirm);
     }
 

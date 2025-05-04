@@ -27,14 +27,4 @@
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         />
-
-    <ImageView
-        android:id="@+id/userAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_launcher_background"
-        android:scaleType="centerCrop"
-        android:background="@drawable/avatar_frame_layout"
-        android:clipToOutline="true"
-        android:visibility="visible" />
 </LinearLayout>

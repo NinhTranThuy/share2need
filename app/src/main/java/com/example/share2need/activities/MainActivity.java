@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.share2need.R;
+import com.example.share2need.activities.ui.main.ManageOrdersActivity;
 import com.example.share2need.adapters.ProductAdapter;
 import com.example.share2need.firebase.ProductRepository;
 import com.example.share2need.firebase.UserRepository;
@@ -251,6 +252,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(userProfileIntent);
     }
     public void order_onClick(MenuItem item) {
+        Intent orderIntent = new Intent(this, ManageOrdersActivity.class);
+        startActivity(orderIntent);
     }
     public void postActivity_onClick(View view) {
         Intent postIntent = new Intent(this, PostActivity.class);

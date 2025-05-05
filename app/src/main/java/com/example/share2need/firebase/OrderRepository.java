@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.share2need.models.Order;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.UUID;
@@ -30,6 +31,8 @@ public class OrderRepository {
 
     public void getOrderByOrderId(String orderId, getProductByOrderIdCallback callback){
         db.collection("orders")
+                .document(userID)
+                .collection("user_orders")
                 .document(orderId)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -58,17 +61,19 @@ public class OrderRepository {
                     if(task.isSuccessful()){
                         Order newOrder = new Order(
                                 bookingId,
-                                "Đang giao",
+                                "đang giao",
                                 productId,
-                                giverId,
                                 receiverId,
+                                giverId,
                                 task.getResult().getString("name"),
                                 task.getResult().getLong("quantity").intValue(),
                                 System.currentTimeMillis(),
                                 chatId);
 
                         db.collection("orders")
-                                .document(newOrder.getOrderId())
+                                .document(receiverId) // userID
+                                .collection("user_orders")
+                                .document(newOrder.getOrderId()) // orderID
                                 .set(newOrder)
                                 .addOnSuccessListener(aVoid -> {
                                     callback.onCreateSuccess(bookingId);
@@ -82,10 +87,15 @@ public class OrderRepository {
 
     public void refuseOrder(String orderId) {
         db.collection("orders")
+                .document(userID)
+                .collection("user_orders")
                 .document(orderId)
-                .update("orderState", "hủy");
+                .update("orderState", "hủy"
+                ,"cancelTime", System.currentTimeMillis());
 
         db.collection("orders")
+                .document(userID)
+                .collection("user_orders")
                 .document(orderId)
                 .get().addOnCompleteListener(task -> {
                    if(task.isSuccessful()) {
@@ -101,8 +111,11 @@ public class OrderRepository {
 
     public void acceptOrder(String orderId) {
         db.collection("orders")
+                .document(userID)
+                .collection("user_orders")
                 .document(orderId)
-                .update("orderState", "đã giao");
+                .update("orderState", "đã nhận",
+                        "receiveTime", System.currentTimeMillis());
     }
 
     public interface createOrderCallback{

@@ -12,6 +12,8 @@ public class Order {
     private long quantity;
     private long timestamp;
     private String chatId;
+    private long receiveTime;
+    private long cancelTime;
     public Order() {}
     public Order(String orderId,String orderState, String productId, String receiverId, String giverId,
                  String productName, long quantity, long timestamp, String chatId) {
@@ -101,4 +103,20 @@ public class Order {
     public void setChatId(String chatId) {
         this.chatId = chatId;
     }
+    public long getReceiveTime() {
+        return receiveTime;
+    }
+
+    public void setReceiveTime(long receiveTime) {
+        this.receiveTime = receiveTime;
+    }
+
+    public long getCancelTime() {
+        return cancelTime;
+    }
+
+    public void setCancelTime(long cancelTime) {
+        this.cancelTime = cancelTime;
+    }
+
 }

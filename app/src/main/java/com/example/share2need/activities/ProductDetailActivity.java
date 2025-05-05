@@ -109,19 +109,27 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                 user.getProfileImage() : null;
 
                                         if (imgUserPost != null) {
-                                            try {
-                                                if (imageAvaUrl != null) {
+                                            if (imageAvaUrl != null) {
+                                                if (isValidUrl(imageAvaUrl)) {
+                                                    // 🔗 Ảnh là URL
                                                     Glide.with(imgUserPost.getContext())
                                                             .load(imageAvaUrl)
                                                             .placeholder(R.drawable.ic_launcher_background)
                                                             .error(R.drawable.broken_image_24px)
                                                             .into(imgUserPost);
                                                 } else {
-                                                    imageProduct.setImageResource(R.drawable.ic_launcher_background);
+                                                    // 🧬 Ảnh là Base64
+                                                    try {
+                                                        byte[] decodedBytes = Base64.decode(imageAvaUrl, Base64.DEFAULT);
+                                                        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                                                        imgUserPost.setImageBitmap(bitmap);
+                                                    } catch (Exception e) {
+                                                        Log.e("Base64Error", "Lỗi decode ảnh base64", e);
+                                                        imgUserPost.setImageResource(R.drawable.broken_image_24px);
+                                                    }
                                                 }
-                                            } catch (Exception e) {
-                                                Log.e("ImageError", "Error loading image", e);
-                                                imageProduct.setImageResource(R.drawable.broken_image_24px);
+                                            } else {
+                                                imgUserPost.setImageResource(R.drawable.ic_launcher_background);
                                             }
                                         }
                                     }

@@ -117,8 +117,6 @@ public class UserProfileActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Không tìm thấy người dùng", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     public void backActivity_onClick(View view) {

@@ -54,10 +54,12 @@ public class OrderDetailActivity extends AppCompatActivity {
     private void initDataView() {
         Intent intent = getIntent();
         String orderId = intent.getStringExtra("orderId");
+        Log.d("orderId", orderId);
         OrderRepository orderRepository = new OrderRepository();
         orderRepository.getOrderByOrderId(orderId, new OrderRepository.getProductByOrderIdCallback() {
             @Override
             public void onProductLoaded(Order order) {
+                Log.d("orderId", "check1");
                 //Lay thong tin nguoi dung
                 UserRepository userRepository = new UserRepository();
                 userRepository.getUserInfo(order.getReceiverId(), new UserRepository.UserCallback() {
@@ -125,11 +127,13 @@ public class OrderDetailActivity extends AppCompatActivity {
             }
             @Override
             public void onProductNotFound() {
+                Log.d("orderId", "check2");
             }
             @Override
             public void onError(Exception e) {
             }
         });
+
     }
     private void initView() {
         orderStateView = findViewById(R.id.orderStateView);

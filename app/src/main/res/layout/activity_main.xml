@@ -59,7 +59,8 @@
             android:background="@color/green"
             app:tint="@color/white"
             android:padding="6dp"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:visibility="gone"/>
         <ImageButton
             android:id="@+id/btnChat"
             android:layout_width="48dp"
